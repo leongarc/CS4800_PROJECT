@@ -16,14 +16,13 @@ class CalorieTracker:
         intake_cursor = intake_conn.cursor()
 
         # Retrieve calorie information from the food database
-        food_cursor.execute("SELECT Calories, name FROM food WHERE lower(name) LIKE ? ", ('%' + ingredient_name.lower() + '%',))
+        food_cursor.execute("SELECT calories, name FROM CALORIES WHERE lower(name) LIKE ? ", ('%' + ingredient_name.lower() + '%',))
         result = food_cursor.fetchone()
 
         if result:
             calorie_per_100g = float(result[0])
             food_name = result[1]
             calorie = (calorie_per_100g / 100) * quantity
-            self.daily_calories += calorie
 
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -74,7 +73,7 @@ user_id = login(username, password)
 
 if user_id is not None:
     # Successful login, create a CalorieTracker instance for the user
-    tracker = CalorieTracker("food.db", "calorie_intake.db", "users.db")
+    tracker = CalorieTracker("ingredients.db", "calorie_intake.db", "users.db")
     
     while True:
         print("Options:")
