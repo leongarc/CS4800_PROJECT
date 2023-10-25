@@ -3,6 +3,8 @@ import pandas as pd
 from datetime import datetime, date
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
+import os 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Connect to the SQLite database and fetch meal data
 conn = sqlite3.connect('newemeals.db')
@@ -54,6 +56,21 @@ class RecommendMeal:
 
 
 tracker = RecommendMeal("ingredients.db", "calorie_intake.db", "users.db")
+
+def login(username, password):
+    user_conn = sqlite3.connect("users.db")
+    user_cursor = user_conn.cursor()
+    user_cursor.execute("SELECT user_id FROM users WHERE username = ? AND password = ?", (username, password))
+    result = user_cursor.fetchone()
+    user_conn.close()
+    return result[0] if result else None
+
+# Prompt the user to enter their username and password
+username = input("Enter your username: ")
+password = input("Enter your password: ")
+
+# Attempt to log in
+user_id = login(username, password)
 
 # Take user input and provide meal recommendations
 user_input = tracker.get_ingredients()

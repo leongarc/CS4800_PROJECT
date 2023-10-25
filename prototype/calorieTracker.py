@@ -1,5 +1,7 @@
 import sqlite3
 from datetime import datetime, date
+import os 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
 class CalorieTracker:
