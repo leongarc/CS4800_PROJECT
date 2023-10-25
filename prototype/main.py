@@ -27,7 +27,12 @@ if __name__ == "__main__":
                 height = input("What is your current height(ft, in): ")
                 target_weight = input("What is your target weight: ")
                 allergies = input("Do you have any allergies: ")
-                log.create_account(username, email, password, fname, lname, body_weight, height, target_weight, allergies)
+                # calculate daily calorie intake
+                if target_weight > body_weight:
+                    calorie_intake = (body_weight * 15) + 500
+                else:
+                    calorie_intake = (body_weight * 15) - 500
+                log.create_account(username, email, password, fname, lname, body_weight, height, target_weight, allergies, calorie_intake)
 
 
                 break
