@@ -7,12 +7,12 @@ from sklearn.metrics.pairwise import linear_kernel
 # Connect to the SQLite database and fetch meal data
 conn = sqlite3.connect('meals.db')
 cursor = conn.cursor()
-cursor.execute('SELECT id, name, ingredients FROM meals')
+cursor.execute('SELECT Recipe Name, Ingredients FROM meals')
 data = cursor.fetchall()
 conn.close()
 
 # Create a DataFrame from the meal data
-meal_df = pd.DataFrame(data, columns=['id', 'Name', 'Ingredients'])
+meal_df = pd.DataFrame(data, columns=['Name', 'Ingredients'])
 
 # Initialize the TF-IDF Vectorizer
 tfidf_vectorizer = TfidfVectorizer(stop_words='english')
@@ -45,7 +45,7 @@ class RecommendMeal:
         intake_cursor = intake_conn.cursor()
 
         intake_cursor.execute("SELECT FoodName FROM calorie_intake WHERE user_id = ? and Timestamp >= DATE_SUB(CURDATE(), INTERVAL 10 DAY);",(self.user_id) )
-        result = intake_cursor.fetchone()
+        result = intake_cursor.fetchall()
         intake_conn.close()
         if result:
             return result[0]
