@@ -5,7 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
 # Connect to the SQLite database and fetch meal data
-conn = sqlite3.connect('meals.db')
+conn = sqlite3.connect('newemeals.db')
 cursor = conn.cursor()
 cursor.execute('SELECT Recipe Name, Ingredients FROM meals')
 data = cursor.fetchall()
@@ -58,6 +58,6 @@ tracker = RecommendMeal("ingredients.db", "calorie_intake.db", "users.db")
 # Take user input and provide meal recommendations
 user_input = tracker.get_ingredients()
 recommendations = tracker.get_recommendations(user_input)
-
+print(user_input)
 print("\nRecommended Meals:")
 print(recommendations)
