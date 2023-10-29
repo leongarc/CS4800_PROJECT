@@ -3,7 +3,7 @@ import os
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
-if __name__ == "__main__":
+def login():
     while True:
         print("**************************")
         print("* Welcome to Eat Well Pal*")
@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
             # Attempt to log in
             user_id = log.login(username, password)
-
+            return(user_id)
         elif answer == "3":
             break
         #add the function that leads to home page
