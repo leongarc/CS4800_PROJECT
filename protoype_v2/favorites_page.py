@@ -1,3 +1,5 @@
+#Author Jack W.
+
 import sqlite3
 
 # Function to list favorite meals for a user
