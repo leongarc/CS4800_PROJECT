@@ -1,7 +1,6 @@
-#This page will hold the command line UI for the favorites page
-#displaying meals that were favorited by the user
 import sqlite3
 
+# Function to list favorite meals for a user
 def list_favorite_meals(user_id):
     conn = sqlite3.connect("favorite_meals.db")
     cursor = conn.cursor()
@@ -19,17 +18,20 @@ def list_favorite_meals(user_id):
         print("You haven't added any meals to your favorites yet.")
 
 def main():
-    user_id = input("Enter your user ID: ")
+    # Get user input (user ID or username)
+    username = input("Enter your username: ")
+    password = input("Enter your password: ")
 
-    try:
-        user_id = int(user_id)
-    except ValueError:
-        print("Invalid user ID. Please enter a valid user ID.")
-        return
+    # Authenticate the user and get their user_id
+    user_id = login(username, password)
 
-    list_favorite_meals(user_id)
+    if user_id is not None:
+        # List favorite meals for the authenticated user
+        list_favorite_meals(user_id)
+    else:
+        print("Invalid username or password. Please try again.")
+
+# Include the signup_check, login, and other functions from the reference code
 
 if __name__ == "__main__":
     main()
-
-#jack w
