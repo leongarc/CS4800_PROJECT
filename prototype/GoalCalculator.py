@@ -1,3 +1,5 @@
+#Author: Jack W.
+
 class CalorieGoalCalculator:
   def __init__(self, height_cm, weight_kg, age, gender, goal):
       self.height_cm = height_cm
