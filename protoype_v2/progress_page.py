@@ -2,7 +2,7 @@
 #this page will need a progress bar that shows how much calories they have consumed and how much they need left
 #this page will need a chart that shows their weight progress
 
-Author: Jack W.
+#Author: Jack W.
 
 import sqlite3
 import matplotlib.pyplot as plt
