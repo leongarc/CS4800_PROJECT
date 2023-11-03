@@ -3,6 +3,7 @@
 #this page will need a chart that shows their weight progress
 
 #Author: Jack W.
+## separate into objects and classes instead of functions ##
 
 import sqlite3
 import matplotlib.pyplot as plt
