@@ -20,4 +20,9 @@ class HomePage():
     def display_recommended_meals(self, rec_meals):
         print("Todays recommened meals for you: ")
         print(rec_meals)
-
+        
+        
+#Add a function that lets the user choose if they want to add one of the recommended meals 
+#Or they want to switch tabs ie Progress, Account, Favorite or sign out/quit application
+#Have them return their response to the main page
+#6. Home, 7. Progress, 8. Favorite, 9. Account, 0. Quit

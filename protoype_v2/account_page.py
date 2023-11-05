@@ -22,14 +22,20 @@ def account_page(user_id):
     print("Body Weight: ", results[2])
     print("Height: ", results[3])
     print("Goal: ", results[4])
-    print("Allergies: ", results[5])      
+    print("Allergies: ", results[5], "/n/n")      
     
     #Displays the different options a user can do like nothing or 
-    #change account info      
-    response = input("Would you like to edit your account [Y]es or [N]o?\n")
+    #change account info     
+    print("1. Edit Account") 
+    print("6. Home Page")
+    print("7. Progress Page")
+    print("8. Favorites Page")
+    print("0. Quit App")
+
+    response = int(input("What would you like to do?\n"))
     
     #if the user chooses to change info, then gets new info from user
-    if response.upper() == "Y":
+    if response == 1:
         fname = input("First Name: ")
         lname = input("Last Name: ")
         bweight = input("Body Weight: ")
@@ -39,11 +45,11 @@ def account_page(user_id):
         
         log.update_info(user_id, fname, lname, bweight, height, goal, allergies)
     
-    elif response.upper() == "N":
-        pass
-    
+    elif (response in range(6,10)) or (response == 0):
+        return(response)
+        
     else:
-        print("Your response didn't match the desired input.  Input\
-            [Y] for yes or [N] for no.")
+        print(response)
+        print("Your response didn't match the desired input. \nPlease choose one of the options above.")
     
     

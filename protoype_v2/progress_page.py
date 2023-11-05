@@ -64,3 +64,8 @@ if __name__ == "__main__":
         print("Invalid user ID. Please enter a valid user ID.")
     else:
         main(user_id)
+
+
+#A function that ask the user if they want to switch tabs ie Progress, Account, Favorite or sign out/quit application
+#Have their response return  to the main page
+#6. Home, 7. Progress, 8. Favorite, 9. Account, 0. Quit

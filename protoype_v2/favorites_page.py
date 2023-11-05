@@ -19,21 +19,26 @@ def list_favorite_meals(user_id):
     else:
         print("You haven't added any meals to your favorites yet.")
 
-def main():
-    # Get user input (user ID or username)
-    username = input("Enter your username: ")
-    password = input("Enter your password: ")
 
-    # Authenticate the user and get their user_id
-    user_id = login(username, password)
+# def main():
+#     # Get user input (user ID or username)
+#     username = input("Enter your username: ")
+#     password = input("Enter your password: ")
 
-    if user_id is not None:
-        # List favorite meals for the authenticated user
-        list_favorite_meals(user_id)
-    else:
-        print("Invalid username or password. Please try again.")
+#     # Authenticate the user and get their user_id
+#     user_id = login(username, password)
 
-# Include the signup_check, login, and other functions from the reference code
+#     if user_id is not None:
+#         # List favorite meals for the authenticated user
+#         list_favorite_meals(user_id)
+#     else:
+#         print("Invalid username or password. Please try again.")
 
-if __name__ == "__main__":
-    main()
+# # Include the signup_check, login, and other functions from the reference code
+
+# if __name__ == "__main__":
+#     main()
+
+#A function that ask the user if they want to switch tabs ie Progress, Account, Favorite or sign out/quit application
+#Have their response return  to the main page
+#6. Home, 7. Progress, 8. Favorite, 9. Account, 0. Quit
