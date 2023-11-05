@@ -27,7 +27,7 @@ def signup_check(username, email):
         return False
 
 
-def create_account(username, email, password, fname, lname, body_weight, height, target_weight, allergies):
+def create_account(username, email, password, fname, lname, body_weight, height, target_weight, allergies, calorie_intake, gender):
     #makes the connection the the Users Database
     con = sqlite3.connect("users.db")
 
@@ -37,7 +37,7 @@ def create_account(username, email, password, fname, lname, body_weight, height,
     cur.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", (username, email, password))
     cur.execute("SELECT user_id FROM users WHERE username = ? AND password = ?", (username, password))
     result = cur.fetchone()
-    cur.execute("INSERT INTO userinfo (user_id, first_name, last_name, body_weight, height, goal, allergies) VALUES (?, ?, ?, ?, ?, ?, ?)", (result[0], fname, lname, body_weight, height, target_weight, allergies))
+    cur.execute("INSERT INTO userinfo (user_id, first_name, last_name, body_weight, height, goal, allergies, calorie_intake, Gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (result[0], fname, lname, body_weight, height, target_weight, allergies, calorie_intake, gender))
     con.commit()
 
 
@@ -76,3 +76,5 @@ def update_info(userid, fname, lname, bweight, height, goal, allergies):
                             allergies = ?\
                         WHERE user_id = ?", (fname, lname, bweight, height, goal, allergies, str(userid)))
     user_conn.commit()
+
+
