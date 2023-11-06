@@ -40,6 +40,23 @@ class CalorieTracker:
         food_conn.close()
         intake_conn.close()
 
+    
+#Author of add_meal Jack W.
+    def add_meal(self, meal_name, calories):
+        intake_conn = sqlite3.connect(self.intake_db_name)
+        intake_cursor = intake_conn.cursor()
+
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # Add the meal to the intake database
+        intake_cursor.execute("INSERT INTO calorie_intake (FoodName, Quantity, TotalCalories, Timestamp, user_id) VALUES (?, ?, ?, ?, ?)",
+                              (meal_name, 1, calories, timestamp, self.user_id))
+        intake_conn.commit()
+
+        print(f"Added {meal_name} to your daily intake with {calories} calories.")
+
+        intake_conn.close()
+
     def get_daily_calories(self):
         intake_conn = sqlite3.connect(self.intake_db_name)
         intake_cursor = intake_conn.cursor()
