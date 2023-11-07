@@ -4,10 +4,12 @@
 #Author: Luis Ochoa
 
 import user_db_connector as log
+import os
 
 #function to display Account Page (command line UI version) 
 def account_page(user_id):
-    user_id = user_id
+    os.system('clear')
+    
     print("*********************************")
     print("*         Eat Well Pall         *")
     print("*          Account Page         *")

@@ -18,6 +18,26 @@ def list_favorite_meals(user_id):
             print(f"ID: {meal[0]}, Name: {meal[1]}, Description: {meal[2]}")
     else:
         print("You haven't added any meals to your favorites yet.")
+        
+    #Displays the different options a user can do like nothing or 
+    #change account info     
+    print("6. Home Page")
+    print("8. Favorites Page")
+    print("9. Account Page")
+    print("0. Quit App")
+
+    response = int(input("What would you like to do?\n"))
+    
+    #if the user chooses to change info, then gets new info from user
+    if response == 1:
+        pass
+    elif (response in range(6,10)) or (response == 0):
+        return(response)
+        
+    else:
+        print(response)
+        print("Your response didn't match the desired input. \nPlease choose one of the options above.")
+
 
 
 # def main():

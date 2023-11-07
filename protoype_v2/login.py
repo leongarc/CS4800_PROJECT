@@ -1,9 +1,11 @@
 import user_db_connector as log
 import os    
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+import os
 
 
 def login():
+    os.system('clear')
     while True:
         print("**************************")
         print("* Welcome to Eat Well Pal*")
@@ -29,8 +31,8 @@ def login():
                 allergies = input("Do you have any allergies: ")
                 gender = input("[M]ale or [F]emale: ")
                 
-                check = True
-                while check == True:
+              
+                while gender == True:
                     if gender.lower() == 'm':
                         gender = "Male"
                         break
