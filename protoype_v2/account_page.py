@@ -24,7 +24,7 @@ def account_page(user_id):
     print("Body Weight: ", results[2])
     print("Height: ", results[3])
     print("Goal: ", results[4])
-    print("Allergies: ", results[5], "/n/n")      
+    print("Allergies: ", results[5], "\n\n")      
     
     #Displays the different options a user can do like nothing or 
     #change account info     

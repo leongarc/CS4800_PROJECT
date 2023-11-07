@@ -1,16 +1,22 @@
 #Author Jack W.
 
 import sqlite3
+import os
 
 # Function to list favorite meals for a user
 def list_favorite_meals(user_id):
-    conn = sqlite3.connect("favorite_meals.db")
+    conn = sqlite3.connect("calorie_intake.db")
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM favorite_meals WHERE user_id=?", (user_id,))
+    cursor.execute("SELECT * FROM Favorite_meals WHERE user_id=?", (user_id,))
     favorite_meals = cursor.fetchall()
 
     conn.close()
+    os.system('clear')
+    print("*********************************")
+    print("*         Eat Well Pall         *")
+    print("*         Favorites Page        *")
+    print("********************************* \n\n")
 
     if favorite_meals:
         print("Your Favorite Meals:")
@@ -22,7 +28,6 @@ def list_favorite_meals(user_id):
     #Displays the different options a user can do like nothing or 
     #change account info     
     print("6. Home Page")
-    print("8. Favorites Page")
     print("9. Account Page")
     print("0. Quit App")
 

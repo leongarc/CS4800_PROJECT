@@ -13,9 +13,10 @@ class HomePage():
         os.system('clear')
         user_name = hp.HomePageConnector(self.user_id).get_user_name()
         rec_meals = hp.HomePageConnector(self.user_id).get_user_rec_meals()
-        print("**********************")
-        print("*      Home Page     *")
-        print("**********************")
+        print("*********************************")
+        print("*         Eat Well Pall         *")
+        print("*           Home Page           *")
+        print("********************************* \n\n")
         print("Welcome,", user_name[0], user_name[1])
         self.display_recommended_meals(rec_meals)
         
