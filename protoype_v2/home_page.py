@@ -36,7 +36,7 @@ class HomePage():
         print("Todays recommened meals for you: ")
         print(rec_meals)
     
-     def navigator(self):
+    def navigator(self):
         options = ["Add Meal", "Progress Page", "Account Page,", "Favorites Page", "Sign Out"]
         print("Please make a choice ")
         for i, option in enumerate(options):
@@ -49,15 +49,13 @@ class HomePage():
             self.navigator()
             
         elif choice == "2":
-            print("Page not found")
-            self.navigator()
+            pass
         elif choice == "3":
             ap.account_page(self.user_id)
         elif choice  == "4":
-             print("Page not found")
-             self.navigator()
+            pass
         elif choice == "5":
-            print("Sign out successful!")
+            pass
         else:
             print("Invalid choice. Please choose from 1-5.")
             self.navigator()
