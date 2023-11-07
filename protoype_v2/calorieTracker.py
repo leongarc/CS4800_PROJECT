@@ -71,7 +71,20 @@ class CalorieTracker:
             return result[0]
         else:
             return 0
+        
+    def get_calories_goal(self):
+        intake_conn = sqlite3.connect(self.users_db_name)
+        intake_cursor = intake_conn.cursor()
 
+
+        intake_cursor.execute("SELECT calorie_intake FROM userinfo WHERE user_id = ?",(self.user_id,) )
+        result = intake_cursor.fetchone()
+        intake_conn.close()
+
+        if result:
+            return result[0]
+        else:
+            return 0
 
 
 # Create a login function to authenticate users
@@ -106,7 +119,7 @@ if user_id is not None:
             quantity = float(input("Enter the quantity (in grams): "))
             tracker.add_ingredient(ingredient_name, quantity)
         elif choice == '2':
-            print(f"{username} daily calorie intake: {tracker.get_daily_calories()} calories")
+            print(f"{username} daily calorie intake: {tracker.get_daily_calories()} calories out of {tracker.get_calories_goal()}")
         elif choice == '3':
             break
 
