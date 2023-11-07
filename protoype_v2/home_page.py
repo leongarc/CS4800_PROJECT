@@ -35,7 +35,32 @@ class HomePage():
     def display_recommended_meals(self, rec_meals):
         print("Todays recommened meals for you: ")
         print(rec_meals)
+    
+     def navigator(self):
+        options = ["Add Meal", "Progress Page", "Account Page,", "Favorites Page", "Sign Out"]
+        print("Please make a choice ")
+        for i, option in enumerate(options):
+            print(f"{i + 1}. {option}")
         
+        choice = input()
+
+        if choice == "1":
+            # Needs add meal function 
+            self.navigator()
+            
+        elif choice == "2":
+            print("Page not found")
+            self.navigator()
+        elif choice == "3":
+            ap.account_page(self.user_id)
+        elif choice  == "4":
+             print("Page not found")
+             self.navigator()
+        elif choice == "5":
+            print("Sign out successful!")
+        else:
+            print("Invalid choice. Please choose from 1-5.")
+            self.navigator()
         
 #Add a function that lets the user choose if they want to add one of the recommended meals 
 #Or they want to switch tabs ie Progress, Account, Favorite or sign out/quit application
