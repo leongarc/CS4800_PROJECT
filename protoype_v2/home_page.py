@@ -31,11 +31,13 @@ class HomePage():
         
         elif (response in range(6,10)) or (response == 0):
             return(response)
-
+        
+    # Shows you recommened meals
     def display_recommended_meals(self, rec_meals):
         print("Todays recommened meals for you: ")
         print(rec_meals)
-    
+
+    # Function for navigating
     def navigator(self):
         options = ["Add Meal", "Progress Page", "Account Page,", "Favorites Page", "Sign Out"]
         print("Please make a choice ")
@@ -46,12 +48,11 @@ class HomePage():
 
         if choice == "1":
             # Needs add meal function 
-            self.navigator()
-            
+            pass  
         elif choice == "2":
             pass
         elif choice == "3":
-            ap.account_page(self.user_id)
+            pass
         elif choice  == "4":
             pass
         elif choice == "5":
