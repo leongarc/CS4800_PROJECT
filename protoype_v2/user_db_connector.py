@@ -5,69 +5,51 @@
 
 import sqlite3
 
-
-def signup_check(username, email):
-
-
-    #makes the connection the the Users Database
-    con = sqlite3.connect("users.db")
-
-    #Creates the Cursor to be able to work in the database
-    cur = con.cursor()
-
-    res = cur.execute("SELECT username FROM users WHERE username = ? or email = ?", (username, email))
-    try: 
+class User:
+    #initialize variables
+    def __init__(self, database= "users.db"):
+        self.database = database
+        self.conn = sqlite3.connect(self.database)
+        self.cur = self.conn.cursor()
+        
+    def close_connection(self):
+        self.conn.close()
+        
+    #checks to see if the username or email is already in use    
+    def signup_check(self, username, email):
+        res = self.cur.execute("SELECT username FROM users WHERE username = ? or email = ?", (username, email))
         username_check = res.fetchone()
-    except: 
-        username_check = None
-
-    if username_check != None:
-        return True
-    else:
-        return False
-
-
-def create_account(username, email, password, fname, lname, body_weight, height, target_weight, allergies, calorie_intake, gender):
-    #makes the connection the the Users Database
-    con = sqlite3.connect("users.db")
-
-    #Creates the Cursor to be able to work in the database
-    cur = con.cursor()
-
-    cur.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", (username, email, password))
-    cur.execute("SELECT user_id FROM users WHERE username = ? AND password = ?", (username, password))
-    result = cur.fetchone()
-    cur.execute("INSERT INTO userinfo (user_id, first_name, last_name, body_weight, height, goal, allergies, calorie_intake, Gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (result[0], fname, lname, body_weight, height, target_weight, allergies, calorie_intake, gender))
-    con.commit()
-
-
-
-#Create a login function to authenticate users
-def login(username, password):
-    user_conn = sqlite3.connect("users.db")
-    user_cursor = user_conn.cursor()
-    user_cursor.execute("SELECT user_id FROM users WHERE username = ? AND password = ?", (username, password))
+        
+        #returns True if the username or email exist, otherwise False
+        return bool(username_check)
     
-    result = user_cursor.fetchone()
+    #Create the new account for the user
+    def create_account(self, username, email, password, fname, lname, body_weight, height, target_weight, allergies, calorie_intake, gender):
+        self.cur.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", (username, email, password))
+        self.cur.execute("SELECT user_id FROM users WHERE username = ? AND password = ?", (username, password))
+        result = self.cur.fetchone()
+        self.cur.execute("INSERT INTO userinfo (user_id, first_name, last_name, body_weight, height, goal, allergies, calorie_intake, Gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (result[0], fname, lname, body_weight, height, target_weight, allergies, calorie_intake, gender))
+        self.conn.commit()
+        
+    #Authenticate the user by checking the username and password
+    def login(self, username, password):
+        self.cur.execute("SELECT user_id FROM users WHERE username = ? AND password = ?", (username, password))
+        result = self.cur.fetchone()
+        
+        #Returns the user_id if authentication is successful, else None
+        return result[0] if result else None
     
-    user_conn.close()
-    return result[0] if result else None
-
-
-#gets all the info from logged in user
-def get_info(user_id):
-    user_conn = sqlite3.connect("users.db")
-    user_cursor = user_conn.cursor()
-    user_cursor.execute("SELECT first_name, last_name, body_weight, height, goal, allergies FROM userinfo WHERE user_id = ?", (str(user_id)))
+    #Gets information about the user(For account page currently)
+    def get_info(self, user_id):
+        self.cur.execute("SELECT first_name, last_name, body_weight, height, goal, allergies FROM userinfo WHERE user_id = ?", (str(user_id)))
+        
+        results = self.cur.fetchone()
+        
+        return results
     
-    results = user_cursor.fetchone()
-    return(results)
-
-#fucntion to change info from the database for logged in user
-def update_info(userid, fname, lname, bweight, height, goal, allergies):
-    user_conn = sqlite3.connect("users.db")
-    user_cursor = user_conn.cursor()
-    user_cursor.execute("UPDATE userinfo\
+    #A method to update the information for the user
+    def update_info(self, userid, fname, lname, bweight, height, goal, allergies):
+        self.cur.execute("UPDATE userinfo\
                         SET first_name = ?,\
                             last_name = ?,\
                             body_weight = ?,\
@@ -75,6 +57,4 @@ def update_info(userid, fname, lname, bweight, height, goal, allergies):
                             goal = ?,\
                             allergies = ?\
                         WHERE user_id = ?", (fname, lname, bweight, height, goal, allergies, str(userid)))
-    user_conn.commit()
-
-
+        self.conn.commit()
