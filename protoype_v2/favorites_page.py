@@ -3,45 +3,69 @@
 import sqlite3
 import os
 
-# Function to list favorite meals for a user
-def list_favorite_meals(user_id):
-    conn = sqlite3.connect("calorie_intake.db")
-    cursor = conn.cursor()
+import sqlite3
+import os
 
-    cursor.execute("SELECT * FROM Favorite_meals WHERE user_id=?", (user_id,))
-    favorite_meals = cursor.fetchall()
+class FavoriteMealsPage:
+    def __init__(self, user_id):
+        self.user_id = user_id
 
-    conn.close()
-    os.system('clear')
-    print("*********************************")
-    print("*         Eat Well Pall         *")
-    print("*         Favorites Page        *")
-    print("********************************* \n\n")
+    def list_favorite_meals(self):
+        conn = sqlite3.connect("calorie_intake.db")
+        cursor = conn.cursor()
 
-    if favorite_meals:
-        print("Your Favorite Meals:")
-        for meal in favorite_meals:
-            print(f"ID: {meal[0]}, Name: {meal[1]}, Description: {meal[2]}")
-    else:
-        print("You haven't added any meals to your favorites yet.")
+        cursor.execute("SELECT * FROM Favorite_meals WHERE user_id=?", (self.user_id,))
+        favorite_meals = cursor.fetchall()
+
+        conn.close()
+        os.system('clear')
+        print("*********************************")
+        print("*         Eat Well Pall         *")
+        print("*         Favorites Page        *")
+        print("********************************* \n\n")
+
+        if favorite_meals:
+            print("Your Favorite Meals:")
+            for meal in favorite_meals:
+                print(f"ID: {meal[0]}, Name: {meal[1]}, Description: {meal[2]}")
+        else:
+            print("You haven't added any meals to your favorites yet.")
         
-    #Displays the different options a user can do like nothing or 
-    #change account info     
-    print("6. Home Page")
-    print("9. Account Page")
-    print("0. Quit App")
+        # Display the different options a user can do like nothing or change account info     
+        print("6. Home Page")
+        print("9. Account Page")
+        print("0. Quit App")
 
-    response = int(input("What would you like to do?\n"))
-    
-    #if the user chooses to change info, then gets new info from user
-    if response == 1:
-        pass
-    elif (response in range(6,10)) or (response == 0):
-        return(response)
-        
+        response = int(input("What would you like to do?\n"))
+
+        if response == 1:
+            pass
+        elif (response in range(6, 10)) or (response == 0):
+            return response
+        else:
+            print(response)
+            print("Your response didn't match the desired input. \nPlease choose one of the options above.")
+
+if __name__ == "__main__":
+    user_id = input("Enter your user ID: ")
+
+    try:
+        user_id = int(user_id)
+    except ValueError:
+        print("Invalid user ID. Please enter a valid user ID.")
     else:
-        print(response)
-        print("Your response didn't match the desired input. \nPlease choose one of the options above.")
+        favorites_page = FavoriteMealsPage(user_id)
+        while True:
+            response = favorites_page.list_favorite_meals()
+            if response == 0:
+                break
+            elif response == 6:
+                # Handle Home Page
+                pass
+            elif response == 9:
+                # Handle Account Page
+                pass
+
 
 
 
