@@ -42,6 +42,12 @@ class CalorieTracker:
 
     
 #Author of add_meal Jack W.
+class CalorieManager:
+    def __init__(self, user_id, intake_db_name, users_db_name):
+        self.user_id = user_id
+        self.intake_db_name = intake_db_name
+        self.users_db_name = users_db_name
+
     def add_meal(self, meal_name, calories):
         intake_conn = sqlite3.connect(self.intake_db_name)
         intake_cursor = intake_conn.cursor()
@@ -63,7 +69,7 @@ class CalorieTracker:
 
         current_date = date.today().strftime("%Y-%m-%d")
 
-        intake_cursor.execute("SELECT SUM(TotalCalories) FROM calorie_intake WHERE user_id = ? and DATE(Timestamp) = ?",(self.user_id, current_date,) )
+        intake_cursor.execute("SELECT SUM(TotalCalories) FROM calorie_intake WHERE user_id = ? and DATE(Timestamp) = ?",(self.user_id, current_date,))
         result = intake_cursor.fetchone()
         intake_conn.close()
 
@@ -76,8 +82,7 @@ class CalorieTracker:
         intake_conn = sqlite3.connect(self.users_db_name)
         intake_cursor = intake_conn.cursor()
 
-
-        intake_cursor.execute("SELECT calorie_intake FROM userinfo WHERE user_id = ?",(self.user_id,) )
+        intake_cursor.execute("SELECT calorie_intake FROM userinfo WHERE user_id = ?",(self.user_id,))
         result = intake_cursor.fetchone()
         intake_conn.close()
 
