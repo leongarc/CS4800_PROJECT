@@ -4,8 +4,9 @@
 #Authors Luis and Uriel
 
 import sqlite3
+from flask_login import UserMixin
 
-class AccountManagement():
+class AccountManagement(UserMixin):
     
     #initialize variables
     def __init__(self, database= "users.db"):
@@ -39,7 +40,7 @@ class AccountManagement():
         
     #Authenticate the user by checking the username and password
     def login(self, username, password):
-        self.cur.execute("SELECT user_id FROM users WHERE username = ? AND password = ?", (username, password))
+        self.cur.execute("SELECT user_id FROM users WHERE username = ? AND password = ?", (str(username), str(password)))
         result = self.cur.fetchone()
         
         #Returns the user_id if authentication is successful, else None
@@ -47,11 +48,18 @@ class AccountManagement():
     
     #Gets information about the user(For account page currently)
     def get_info(self, user_id):
-        self.cur.execute("SELECT first_name, last_name, body_weight, height, goal, allergies FROM userinfo WHERE user_id = ?", (str(user_id)))
+        self.cur.execute("SELECT user_id, username, email FROM users WHERE user_id = ?", (str(user_id)))
         
         results = self.cur.fetchone()
+        if results:
+            user_object = AccountManagement()
+            user_object.id = results[0]
+            user_object.username = results[1]
+            user_object.email = results[2]
         
-        return results
+            return user_object
+        
+        return None
     
     #A method to update the information for the user
     def update_info(self, userid, fname, lname, bweight, height, goal, allergies):

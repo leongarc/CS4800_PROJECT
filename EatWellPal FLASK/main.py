@@ -1,20 +1,55 @@
 from flask import Flask, render_template, url_for, request, redirect
 import sqlite3
 from connectors import user_db_connector as user
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
 
+login_manager = LoginManager(app)
+
+#sets the login view route
+login_manager.login_view = 'login'
   
-
+#This is a callback function to get info about logged in users in the session
+@login_manager.user_loader
+def load_user(user_id):
+    return user.AccountManagement().get_info(int(user_id))
 
 @app.route('/')
 def home():
     return render_template('home.html')
 
-@app.route('/login')
-def login():
-    return render_template('login.html')
 
+#Logic behind the login page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Check the username and password
+        username = request.form['username']
+        password = request.form['password']
+
+        users = user.AccountManagement()
+        user_id = users.login(username, password)
+
+        if user_id:
+            print(type(user_id))
+            user_obj = users.get_info(user_id)
+            login_user(user_obj)  # Log in the user
+            return redirect(url_for('dashboard'))  # Redirect to a dashboard or profile page
+
+    return render_template('login.html', error='Invalid username or password')
+
+
+
+#a way to log out, login is required
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()  # Log out the user
+    return redirect(url_for('home'))  # Redirect to your home page
+
+#logic to log in a user
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -34,6 +69,8 @@ def signup():
     # If it's a GET request, render the signup form
     return render_template('signup.html', error=None)
 
+
+#After we have verified that their username/email is not in use we get the rest of the info
 @app.route('/complete_signup', methods=['POST'])
 def complete_signup():
     # Retrieve user input from the additional_info form
@@ -59,6 +96,13 @@ def complete_signup():
 
     # Redirect to a success page or another route
     return redirect(url_for('login'))
+
+
+#temp dashboard to test login feature
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return f"Hello, {current_user.username}! This is your dashboard."
 
 
 if __name__ == '__main__':
