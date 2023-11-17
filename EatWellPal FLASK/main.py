@@ -28,7 +28,7 @@ def login():
         # Check the username and password
         username = request.form['username']
         password = request.form['password']
-
+    
         users = user.AccountManagement()
         user_id = users.login(username, password)
 
