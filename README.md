@@ -38,4 +38,4 @@ Dev Team: Uriel Alvarez, Luis Ochoa, Jack Wheeland, Leo Garcia
 do-not-reply@eatwellpal.com
 
 ## Changelog
-Alpha Ver. 0.0.1 -- Bug Fixes
+Beta Ver. 1.0 -- Switching over to Flask
