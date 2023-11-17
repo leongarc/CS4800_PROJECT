@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="menu">
+        <ul>
+            <li><i class="fa-solid fa-house-chimney"></i><a href="{{url_for('main')}}">Home</a></li>
+            <li><i class="fa-solid fa-utensils"></i><a href="{{url_for('meals')}}">Meals</a></li>
+            <li class="active"><i class="fa-solid fa-bars-progress"></i><a href="{{url_for('progress')}}">Progress</a></li>
+            <li><i class="fa-solid fa-heart"></i><a href="{{url_for('favorites')}}">Favorites</a></li>
+            <li><i class="fa-solid fa-gear"></i><a href="{{url_for('account')}}">Account</a></li>
+        </ul>
+    </div>
+    <p>This is the Progress Page</p>
+</body>
+</html>

@@ -36,7 +36,7 @@ def login():
             print(type(user_id))
             user_obj = users.get_info(user_id)
             login_user(user_obj)  # Log in the user
-            return redirect(url_for('dashboard'))  # Redirect to a dashboard or profile page
+            return redirect(url_for('main'))  # Redirect to a dashboard or profile page
 
     return render_template('login.html', error='Invalid username or password')
 
@@ -99,10 +99,31 @@ def complete_signup():
 
 
 #temp dashboard to test login feature
-@app.route('/dashboard')
+@app.route('/main')
 @login_required
-def dashboard():
-    return f"Hello, {current_user.username}! This is your dashboard."
+def main():
+    username=current_user.username
+    return render_template('main.html', username=username)
+
+@app.route('/meals')
+@login_required
+def meals():
+    return render_template('meals.html')
+
+@app.route('/progress')
+@login_required
+def progress():
+    return render_template('progress.html')
+
+@app.route('/favorites')
+@login_required
+def favorites():
+    return render_template('favorites.html')
+
+@app.route('/account')
+@login_required
+def account():
+    return render_template('account.html')
 
 
 if __name__ == '__main__':

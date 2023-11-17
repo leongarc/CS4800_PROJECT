@@ -1,0 +1,50 @@
+/* styles.css */
+/* Menu CSS */
+.menu {
+    width: 100%;
+    background-color: none;
+}
+
+.menu ul {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.menu ul li {
+    display: inline-block;
+    text-decoration: none;
+    color: #545454;
+    font-size: 25px;
+    width: 240px;
+    height: auto;
+    line-height: 60px;
+    
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    font-family: Arial;
+}
+
+.menu ul li a {
+    color: #545454;
+    font-size: 25px;
+    text-decoration: none;
+
+}
+
+.menu ul li:hover {
+    background-color: #66ad5a;
+}
+
+i{
+    color: #545454;
+    font-size: 25px;
+    font-weight: bold;
+    padding-right: 5px;
+}
+
+#sub-header ul li:hover,
+li.active  { 
+    background-color: #66ad5a;
+}
