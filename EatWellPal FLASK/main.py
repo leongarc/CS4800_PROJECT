@@ -33,6 +33,7 @@ def login():
         user_id = users.login(username, password)
 
         if user_id:
+          #uses flask functions to handle login in a user for a session
             print(type(user_id))
             user_obj = users.get_info(user_id)
             login_user(user_obj)  # Log in the user
@@ -127,9 +128,6 @@ def account():
     #gets information about the logged in user
     log_user = user.AccountManagement()
     log_user = log_user.about_user(current_user.id)
-
-
-
     return render_template('account.html', log_user = log_user)
 
 
