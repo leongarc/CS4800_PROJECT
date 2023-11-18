@@ -120,10 +120,17 @@ def progress():
 def favorites():
     return render_template('favorites.html')
 
+
 @app.route('/account')
 @login_required
 def account():
-    return render_template('account.html')
+    #gets information about the logged in user
+    log_user = user.AccountManagement()
+    log_user = log_user.about_user(current_user.id)
+
+
+
+    return render_template('account.html', log_user = log_user)
 
 
 if __name__ == '__main__':

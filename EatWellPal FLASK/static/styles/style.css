@@ -49,3 +49,35 @@ i{
 li.active  { 
     background-color: #66ad5a;
 }
+
+/* New styles for the account container and box */
+
+.account-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.account-box {
+    background-color: #dddddd;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px; /* Adjust as needed */
+    width: 100%;
+}
+
+.account-info {
+    font-family: Arial, sans-serif;
+}
+
+.account-info label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.account-info p {
+    margin: 0;
+}

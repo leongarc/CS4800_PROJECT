@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account</title>
+
+    </style>
     <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
 </head>
@@ -17,6 +19,23 @@
             <li class="active"><i class="fa-solid fa-gear"></i><a href="{{url_for('account')}}">Account</a></li>
         </ul>
     </div>
-    <p>This is the account Page</p>
+
+    <div class="account-container">
+        <div class="account-box">
+            <label for="firstName">First Name:</label>
+            <p id="firstName">{{log_user[0]}}</p>
+    
+            <label for="lastName">Last Name:</label>
+            <p id="lastName">{{log_user[1]}}</p>
+    
+            <label for="weight">Weight:</label>
+            <p id="weight">{{log_user[2]}}</p>
+    
+            <label for="heigt">Height:</label>
+            <p id="height">{{log_user[3]}}</p>
+        </div>
+    </div>
+
+
 </body>
 </html>
