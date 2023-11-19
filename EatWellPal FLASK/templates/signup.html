@@ -1,26 +1,36 @@
+<!--Author: Luis Ochoa-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='styles/login_style.css') }}" rel="stylesheet">
+
     <title>Signup</title>
 </head>
 <body>
-    <h1>Signup</h1>
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
-    <form method="post" action="{{ url_for('signup') }}">
-        <label for="username">Username:</label>
-        <input type="text" name="username" required><br>
+    <div class="login-container">
+        <div class="login-title">
+            Sign Up to Eat Well Pal
+            {% if error %}
+                <p style="color: red;">{{ error }}</p>
+            {% endif %}
+        </div>
 
-        <label for="email">Email:</label>
-        <input type="email" name="email" required><br>
 
-        <label for="password">Password:</label>
-        <input type="password" name="password" required><br>
+        <form class= "login-form" method="post" action="{{ url_for('signup') }}">
+            <label for="username">Username:</label>
+            <input type="text" name="username" required><br>
 
-        <input type="submit" value="Next">
-    </form>
+            <label for="email">Email:</label>
+            <input type="email" name="email" required><br>
+
+            <label for="password">Password:</label>
+            <input type="password" name="password" required><br>
+
+            <input type="submit" value="Next">
+        </form>
+    </div>
 </body>
 </html>
