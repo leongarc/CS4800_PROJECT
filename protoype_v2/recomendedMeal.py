@@ -102,7 +102,6 @@ class MealConnector:
         if results:
             food_name = [result[0] for result in results]
             user_input = '  '.join(food_name).lower()
-            print("grooup test",user_input)
             return user_input
         else:
             return ''
@@ -118,10 +117,8 @@ class MealConnector:
         if results:
             food_name = [result[0] for result in results]
             user_input = '  '.join(food_name).lower()
-            print("user test",user_input)
             return user_input
         else:
-            print("nnoot results")
             return ''
             
     def login(self, username, password):
