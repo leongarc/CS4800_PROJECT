@@ -1,41 +1,51 @@
+<!--Author: Luis Ochoa-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='styles/login_style.css') }}" rel="stylesheet">
+
     <title>Additional Information</title>
 </head>
 <body>
-    <h1>Additional Information</h1>
-    <form method="post" action="{{ url_for('complete_signup') }}">
-        <!-- Additional form fields for name, age, height, etc. -->
-        <label for="fname">First Name:</label>
-        <input type="text" name="fname" required><br>
+    <div class="login-container">
+        <div class="login-title">
+            Sign Up to Eat Well Pal
+        </div>
 
-        <label for="lname">Last Name:</label>
-        <input type="text" name="lname" required><br>
 
-        <label for="body_weight">Body Weight in Pounds:</label>
-        <input type="number" name="body_weight" required><br>
+        <form class= "login-form" method="post" action="{{ url_for('complete_signup') }}">
+            <!-- Additional form fields for name, age, height, etc. -->
+            <label for="fname">First Name:</label>
+            <input type="text" name="fname" required><br>
 
-        <label for="height">Height(ft, in):</label>
-        <input type="text" name="height" required><br>
+            <label for="lname">Last Name:</label>
+            <input type="text" name="lname" required><br>
 
-        <label for="target_weight">Target Weight:</label>
-        <input type="text" name="target_weight" required><br>
+            <label for="body_weight">Body Weight in Pounds:</label>
+            <input type="number" name="body_weight" required><br>
 
-        <label for="allergies">Allergies:</label>
-        <input type="text" name="allergies" required><br>
+            <label for="height">Height(ft, in):</label>
+            <input type="text" name="height" required><br>
 
-        <label for="gender">Gender(Male, Female, or other):</label>
-        <input type="text" name="gender" required><br>
+            <label for="target_weight">Target Weight:</label>
+            <input type="text" name="target_weight" required><br>
 
-        <!-- Pass the username and email as hidden fields -->
-        <input type="hidden" name="username" value="{{ username }}">
-        <input type="hidden" name="email" value="{{ email }}">
-        <input type="hidden" name="password" value="{{ password }}">
+            <label for="allergies">Allergies:</label>
+            <input type="text" name="allergies" required><br>
 
-        <input type="submit" value="Complete Signup">
-    </form>
+            <label for="gender">Gender(Male, Female, or other):</label>
+            <input type="text" name="gender" required><br>
+
+            <!-- Pass the username and email as hidden fields -->
+            <input type="hidden" name="username" value="{{ username }}">
+            <input type="hidden" name="email" value="{{ email }}">
+            <input type="hidden" name="password" value="{{ password }}">
+
+            <input type="submit" value="Complete Signup">
+        </form>
+    </div>
 </body>
 </html>
