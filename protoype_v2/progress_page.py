@@ -25,7 +25,7 @@ class WeightProgressChart:
         self.user_id = user_id
 
     def plot(self):
-        conn = sqlite3.connect("weight_progress.db")
+        conn = sqlite3.connect("user.db")
         cursor = conn.cursor()
 
         cursor.execute("SELECT date, weight FROM weight_data WHERE user_id=?", (self.user_id,))
