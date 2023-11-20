@@ -8,10 +8,11 @@ Needs Matplotlib for Plots
     - https://matplotlib.org/stable/users/installing/index.html
 
 ## Usage
-1) Run main.py to start app
-2) Login or create an account
-3) After logging in or signing up, you'll reach the Home Page
-4) This is your main page where you can navigate to account settings, Calorie Tracker, Favorites, and Progress Page. This page also shows your recommened meals for the day.
+1) Head over to EatWellPal FLASK directory
+2) Run main.py to start app
+3) Login or create an account
+4) After logging in or signing up, you'll reach the Home Page
+5) This is your main page where you can navigate to account settings, Calorie Tracker, Favorites, and Progress Page. This page also shows your recommened meals for the day.
 
 Calorie Tracker: You'll be prompted to enter the name of the meal plus the weight. Calories are then automatically calculated and added into your calorie intake progress.
 
