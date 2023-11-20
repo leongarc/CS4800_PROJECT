@@ -4,8 +4,7 @@
 The primary challenge for many individuals when managing their weight is not just monitoring calorie intake for gaining or losing weight, but rather the difficulty of maintaining a clear understanding of their goals and finding suitable meals that align with their dietary plans. This issue is further emphasized by the struggle to discover meals that conform to a prescribed plan and accommodate specific dietary restrictions. Many existing calorie counter and diet apps fall short in this regard as they primarily focus on tracking calories and meeting daily targets without offering comprehensive meal suggestions that fit within a user's calorie and dietary requirements. EatWellPal is an application that provides the calorie content of individual ingredients and offers complete meal suggestions tailored to a user's specific calorie and nutritional objectives.
 
 ## Configuration
-Needs Matplotlib for Plots
-    - https://matplotlib.org/stable/users/installing/index.html
+See requirements.txt
 
 ## Usage
 1) Head over to EatWellPal FLASK directory
