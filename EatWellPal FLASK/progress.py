@@ -1,6 +1,8 @@
 import sqlite3
 from flask import Flask, render_template
 
+#Author Jack W.
+
 app = Flask(__name__)
 
 # Define your ProgressBar, WeightProgressChart, and UserInterface classes here
