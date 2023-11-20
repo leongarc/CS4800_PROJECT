@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calorie Progress</title>
+</head>
+<body>
+    <h1>Calorie Progress Page</h1>
+    
+    {% if calorie_progress %}
+    <p>Consumed Calories: {{ calorie_progress.consumed_calories }} / Daily Goal: {{ calorie_progress.daily_calorie_goal }}</p>
+    <p>Calorie Consumption Progress:</p>
+    <p>{{ user_interface.display_calorie_progress() }}</p>
+    {% else %}
+    <p>No calorie consumption data available</p>
+    {% endif %}
+</body>
+</html>
