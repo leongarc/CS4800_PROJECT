@@ -100,7 +100,7 @@ def complete_signup():
     # Redirect to a success page or another route
     return redirect(url_for('login'))
 
-
+#All pages beyond require a user to be logged in except for login that is above.
 #temp dashboard to test login feature
 @app.route('/main')
 @login_required
