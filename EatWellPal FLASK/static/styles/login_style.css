@@ -1,4 +1,5 @@
 /*Author Luis Ochoa*/
+/*This page controls the css for the login as well as the signup and additional info pages as they are similar*/
 
 body {
     margin: 0;
@@ -53,7 +54,8 @@ body {
 }
 
 .login-button {
-    background-color: #8bc34a; /* light green */
+    /* light green */
+    background-color: #8bc34a; 
     color: white;
     border: none;
     padding: 10px 15px;
@@ -64,8 +66,10 @@ body {
 }
 
 .login-button:hover {
-    background-color: #689f38; /* darker green on hover */
+     /* darker green */
+    background-color: #689f38;
 }
+/*additional info for signup pages*/
 .signup-link {
     font-family: Arial, sans-serif;
     font-size: 14px;
