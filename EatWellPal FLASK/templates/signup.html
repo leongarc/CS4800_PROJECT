@@ -1,4 +1,7 @@
 <!--Author: Luis Ochoa-->
+<!--This page controls the HTML for signup  page.  This page controls getting basic info like email and password and returning it to main.py.
+Returns the info back to the main page and if valid will send them to the next page to finish setting up the account.
+The info is passed to the main.py. -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +21,7 @@
             {% endif %}
         </div>
 
-
+<!--This is where the boxes are made for the user info-->
         <form class= "login-form" method="post" action="{{ url_for('signup') }}">
             <label for="username">Username:</label>
             <input type="text" name="username" required><br>
