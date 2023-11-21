@@ -1,3 +1,5 @@
+#Authors: Everyone
+
 from flask import Flask, render_template, url_for, request, redirect
 import sqlite3
 from connectors import user_db_connector as user
