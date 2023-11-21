@@ -1,4 +1,7 @@
 <!--Author: Luis Ochoa-->
+<!--This page controls the HTML for addtional info page.  This page controls getting addtional information from the user.
+Displays the boxes for height, fname, etc.  Returns the info back to the main page to complete setup of the account.
+The info is passed to the main.py. -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +18,7 @@
             Sign Up to Eat Well Pal
         </div>
 
-
+<!--Where the user can begin entering info-->
         <form class= "login-form" method="post" action="{{ url_for('complete_signup') }}">
             <!-- Additional form fields for name, age, height, etc. -->
             <label for="fname">First Name:</label>
