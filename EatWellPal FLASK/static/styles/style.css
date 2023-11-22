@@ -50,6 +50,43 @@ li.active  {
     background-color: #66ad5a;
 }
 
+
+/*CSS for the Button*/
+button {
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    background-color: white; 
+    color: black; 
+    border: 2px solid #04AA6D;
+}
+  
+button:hover {
+    background-color: #04AA6D;
+    color: white;
+}
+
+.container {
+    height: 50px;
+    position: relative;
+}
+  
+.center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+  
+
 /* New styles for the account container and box */
 
 .account-container {
@@ -57,7 +94,7 @@ li.active  {
     justify-content: center;
     align-items: center;
     /*how far down the box will pop up*/
-    height: 50vh;
+    height: 60vh;
 }
 
 .account-box {

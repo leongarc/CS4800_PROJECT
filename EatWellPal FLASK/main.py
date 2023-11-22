@@ -45,12 +45,8 @@ def login():
 
 
 
-#a way to log out, login is required
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()  # Log out the user
-    return redirect(url_for('home'))  # Redirect to your home page
+
+    
 
 #logic to log in a user
 @app.route('/signup', methods=['GET', 'POST'])
@@ -102,6 +98,35 @@ def complete_signup():
 
 #All pages beyond require a user to be logged in except for login that is above.
 #temp dashboard to test login feature
+#a way to log out, login is required
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()  # Log out the user
+    return redirect(url_for('home'))  # Redirect to your home page
+
+@app.route('/edit_account')
+@login_required
+def edit_account(user_id):
+    fname = request.form['fname']
+    lname = request.form['lname']
+    body_weight = request.form['body_weight']
+    height = request.form['height']
+    target_weight = request.form['target_weight']
+    allergies = request.form['allergies']
+    gender = request.form['gender']
+
+    # Create an instance of the User class
+    users = user.AccountManagement()
+
+    # Call the create_account method to store the additional information
+    users.update_info(user_id, fname, lname, body_weight, height, target_weight, allergies, gender)
+
+    # Close the database connection
+    users.close_connection()
+    return redirect(url_for('account'))
+
+    
 @app.route('/main')
 @login_required
 def main():
