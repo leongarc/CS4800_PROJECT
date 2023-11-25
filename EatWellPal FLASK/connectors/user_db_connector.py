@@ -72,13 +72,14 @@ class AccountManagement(UserMixin):
             return results
 
     #A method to update the information for the user
-    def update_info(self, userid, fname, lname, bweight, height, goal, allergies):
+    def update_info(self, userid, fname, lname, bweight, height, goal, allergies, gender):
         self.cur.execute("UPDATE userinfo\
                         SET first_name = ?,\
                             last_name = ?,\
                             body_weight = ?,\
                             height = ?,\
                             goal = ?,\
-                            allergies = ?\
-                        WHERE user_id = ?", (fname, lname, bweight, height, goal, allergies, str(userid)))
+                            allergies = ?,\
+                            gender = ?\
+                        WHERE user_id = ?", (fname, lname, bweight, height, goal, allergies, gender, str(userid)))
         self.conn.commit()

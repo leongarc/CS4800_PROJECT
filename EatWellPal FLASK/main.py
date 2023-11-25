@@ -129,7 +129,7 @@ def edit_account():
         users = user.AccountManagement()
 
         # Call the create_account method to store the additional information
-        users.update_info(fname, lname, body_weight, height, target_weight, allergies, gender)
+        users.update_info(current_user.id ,fname, lname, body_weight, height, target_weight, allergies, gender)
 
         # Close the database connection
         users.close_connection()
