@@ -12,7 +12,7 @@ login_manager = LoginManager(app)
 
 #sets the login view route
 login_manager.login_view = 'login'
-  
+
 #This is a callback function to get info about logged in users in the session
 @login_manager.user_loader
 def load_user(user_id):
@@ -43,10 +43,6 @@ def login():
 
     return render_template('login.html', error='Invalid username or password')
 
-
-
-
-    
 
 #logic to log in a user
 @app.route('/signup', methods=['GET', 'POST'])
@@ -105,26 +101,43 @@ def logout():
     logout_user()  # Log out the user
     return redirect(url_for('home'))  # Redirect to your home page
 
-@app.route('/edit_account')
+@app.route('/account', methods = ['GET', 'POST'])
 @login_required
-def edit_account(user_id):
-    fname = request.form['fname']
-    lname = request.form['lname']
-    body_weight = request.form['body_weight']
-    height = request.form['height']
-    target_weight = request.form['target_weight']
-    allergies = request.form['allergies']
-    gender = request.form['gender']
+def account():
+    #gets information about the logged in user
+    log_user = user.AccountManagement()
+    log_user = log_user.about_user(current_user.id)
+    if request.method == 'POST':
+        return render_template('edit_account', user_id = current_user.id)
 
-    # Create an instance of the User class
-    users = user.AccountManagement()
+    return render_template('account.html', log_user = log_user)
 
-    # Call the create_account method to store the additional information
-    users.update_info(user_id, fname, lname, body_weight, height, target_weight, allergies, gender)
+@app.route('/edit_account', methods=['GET', 'POST'])
+@login_required
+def edit_account():
+    if request.method=='POST':
+        #user_id = request.form['user_id']
+        fname = request.form['fname']
+        lname = request.form['lname']
+        body_weight = request.form['body_weight']
+        height = request.form['height']
+        target_weight = request.form['target_weight']
+        allergies = request.form['allergies']
+        gender = request.form['gender']
 
-    # Close the database connection
-    users.close_connection()
-    return redirect(url_for('account'))
+        # Create an instance of the User class
+        users = user.AccountManagement()
+
+        # Call the create_account method to store the additional information
+        users.update_info(fname, lname, body_weight, height, target_weight, allergies, gender)
+
+        # Close the database connection
+        users.close_connection()
+        return redirect(url_for('account'))
+    
+    #When the user first goes to this screen, this will be returned since nothing is entered
+    #in the page thus the method is GET
+    return render_template('edit_account.html')
 
     
 @app.route('/main')
@@ -149,13 +162,6 @@ def favorites():
     return render_template('favorites.html')
 
 
-@app.route('/account')
-@login_required
-def account():
-    #gets information about the logged in user
-    log_user = user.AccountManagement()
-    log_user = log_user.about_user(current_user.id)
-    return render_template('account.html', log_user = log_user)
 
 
 if __name__ == '__main__':
