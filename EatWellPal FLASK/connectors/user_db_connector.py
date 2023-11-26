@@ -73,6 +73,11 @@ class AccountManagement(UserMixin):
 
     #A method to update the information for the user
     def update_info(self, userid, fname, lname, bweight, height, goal, allergies, gender):
+        if int(goal) > int(bweight):
+            calorie_intake = (int(bweight) * 15) + 500
+        else:
+            calorie_intake = (int(bweight) * 15) - 500
+
         self.cur.execute("UPDATE userinfo\
                         SET first_name = ?,\
                             last_name = ?,\
@@ -80,6 +85,7 @@ class AccountManagement(UserMixin):
                             height = ?,\
                             goal = ?,\
                             allergies = ?,\
+                            calorie_intake = ?\
                             gender = ?\
-                        WHERE user_id = ?", (fname, lname, bweight, height, goal, allergies, gender, str(userid)))
+                        WHERE user_id = ?", (fname, lname, bweight, height, goal, allergies, calorie_intake, gender, str(userid)))
         self.conn.commit()
