@@ -4,7 +4,7 @@ from flask import Flask, render_template, url_for, request, redirect
 import sqlite3
 from connectors import user_db_connector as user
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
-from protoype_v2 import recomendedMeal 
+from connectors import recomendedMeal 
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -164,7 +164,7 @@ def main():
             tracker.process_meal_data()
 
             # Render results template
-            return render_template('results.html',
+            return render_template('main.html',
                                     user_input=tracker.get_ingredients(),
                                     group_input=tracker.get_ingredients_group(),
                                     recommendations_user=tracker.get_recommendations(tracker.get_ingredients(), None),
