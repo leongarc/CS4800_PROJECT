@@ -76,20 +76,25 @@ class MealConnector:
         cosine_scores = linear_kernel(user_tfidf, self.tfidf_matrix)
         meal_scores = list(enumerate(cosine_scores[0]))
         meal_scores = sorted(meal_scores, key=lambda x: x[1], reverse=True)
-        top_meal_indices = [score[0] for score in meal_scores]
+        top_meal_indices = [score[0] for score in meal_scores][:10]
         return self.meal_df['Name'].iloc[top_meal_indices]
 
     def new_meals(self):
         # Connect to the SQLite database and fetch meal data
         conn = sqlite3.connect('meals.db')
         cursor = conn.cursor()
-        cursor.execute('SELECT RecipeName, Calories FROM recipes WHERE RecipeName <> "" ORDER BY ID DESC LIMIT 10')
+        cursor.execute('SELECT RecipeName, id FROM recipes WHERE RecipeName <> "" ORDER BY ID DESC LIMIT 10')
         data = cursor.fetchall()
         conn.close()
 
-        for recipe_name, calories in data:
-            if recipe_name and calories:
-                return ((recipe_name, calories))
+        new_meal = []
+
+        for recipe_name, id in data:
+            if recipe_name and id:
+                new_meal.append((id, recipe_name))
+
+        return pd.DataFrame(new_meal)
+    
 
     def get_ingredients_group(self):
         intake_conn = sqlite3.connect(self.intake_db_name)

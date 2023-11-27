@@ -4,6 +4,7 @@ from flask import Flask, render_template, url_for, request, redirect
 import sqlite3
 from connectors import user_db_connector as user
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
+from protoype_v2 import recomendedMeal 
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -140,12 +141,39 @@ def edit_account():
     return render_template('edit_account.html')
 
     
-@app.route('/main')
+@app.route('/main', methods=['GET', 'POST'])
 @login_required
 def main():
-    username=current_user.username
-    return render_template('main.html', username=username)
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
 
+        # Create an instance of AccountManagement
+        account_manager = user.AccountManagement()
+
+        # Attempt to log in
+        user_id = account_manager.login(username, password)
+
+        account_manager.close_connection()
+
+        if user_id is not None:
+            # Create an instance of MealConnector
+            tracker = recomendedMeal.MealConnector("ingredients.db", "calorie_intake.db", "users.db")
+
+            # Process meal data, initialize TF-IDF, and get recommendations
+            tracker.process_meal_data()
+
+            # Render results template
+            return render_template('results.html',
+                                    user_input=tracker.get_ingredients(),
+                                    group_input=tracker.get_ingredients_group(),
+                                    recommendations_user=tracker.get_recommendations(tracker.get_ingredients(), None),
+                                    recommendations_group=tracker.get_recommendations(tracker.get_ingredients_group(), None),
+                                    new_meals=tracker.new_meals())
+        else:
+            return render_template('index.html', message="Login failed. Please check your credentials.")
+    else:
+        return render_template('login.html')
 @app.route('/meals')
 @login_required
 def meals():
