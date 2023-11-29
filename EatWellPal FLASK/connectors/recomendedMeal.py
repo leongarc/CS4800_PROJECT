@@ -5,8 +5,6 @@ import pandas as pd
 from datetime import datetime, date
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
-import os 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 class MealConnector:
     def __init__(self, food_db_name, intake_db_name, users_db_name):
@@ -136,19 +134,3 @@ class MealConnector:
             self.user_id = result[0]
         return self.user_id
 
-
-# Prompt the user to enter their username and password
-username = input("Enter your username: ")
-password = input("Enter your password: ")
-
-# Create an instance of MealConnector
-tracker = MealConnector("ingredients.db", "calorie_intake.db", "users.db")
-
-# Attempt to log in
-user_id = tracker.login(username, password)
-
-if user_id is not None:
-    # Process meal data, initialize TF-IDF, and get recommendations
-    tracker.process_meal_data()
-else:
-    print("Login failed. Please check your credentials.")

@@ -5,6 +5,9 @@
 
 import sqlite3
 from flask_login import UserMixin
+import os 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 
 class AccountManagement(UserMixin):
     
