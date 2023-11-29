@@ -1,7 +1,6 @@
 #Authors: Everyone
 
 from flask import Flask, render_template, url_for, request, redirect, flash
-import sqlite3
 from connectors import user_db_connector as user
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from connectors import recomendedMeal 
