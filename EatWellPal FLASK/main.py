@@ -144,19 +144,10 @@ def edit_account():
 @app.route('/main', methods=['GET', 'POST'])
 @login_required
 def main():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    log_user = user.AccountManagement()
+    log_user = log_user.about_user(current_user.id)
 
-        # Create an instance of AccountManagement
-        account_manager = user.AccountManagement()
-
-        # Attempt to log in
-        user_id = account_manager.login(username, password)
-
-        account_manager.close_connection()
-
-        if user_id is not None:
+    if log_user is not None:
             # Create an instance of MealConnector
             tracker = recomendedMeal.MealConnector("ingredients.db", "calorie_intake.db", "users.db")
 
@@ -170,10 +161,10 @@ def main():
                                     recommendations_user=tracker.get_recommendations(tracker.get_ingredients(), None),
                                     recommendations_group=tracker.get_recommendations(tracker.get_ingredients_group(), None),
                                     new_meals=tracker.new_meals())
-        else:
-            return render_template('index.html', message="Login failed. Please check your credentials.")
     else:
-        return render_template('login.html')
+        return render_template('index.html', message="Login failed. Please check your credentials.")
+
+    
 @app.route('/meals')
 @login_required
 def meals():
