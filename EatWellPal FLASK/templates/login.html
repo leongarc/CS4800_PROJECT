@@ -35,6 +35,15 @@
         <a href="{{url_for('signup')}}" class="signup-link">Don't have an Account? Sign Up!</a>
     </div>
 
+    <div class="flash-container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                   <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+     </div>
 
 </body>
 </html>
