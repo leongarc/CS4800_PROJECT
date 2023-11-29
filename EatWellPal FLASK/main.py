@@ -1,6 +1,6 @@
 #Authors: Everyone
 
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, flash
 import sqlite3
 from connectors import user_db_connector as user
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
@@ -42,7 +42,10 @@ def login():
             login_user(user_obj)  # Log in the user
             return redirect(url_for('main'))  # Redirect to a dashboard or profile page
 
-    return render_template('login.html', error='Invalid username or password')
+        flash('Login Error: Invaldid Username or Password')
+
+
+    return render_template('login.html')
 
 
 #logic to log in a user
