@@ -151,19 +151,19 @@ def main():
     log_user = log_user.about_user(current_user.id)
 
     if log_user is not None:
-            # Create an instance of MealConnector
-            tracker = recomendedMeal.MealConnector("ingredients.db", "calorie_intake.db", "users.db")
+        # Create an instance of MealConnector
+        tracker = recomendedMeal.MealConnector("ingredients.db", "calorie_intake.db", "users.db")
 
-            # Process meal data, initialize TF-IDF, and get recommendations
-            tracker.process_meal_data()
+        # Process meal data, initialize TF-IDF, and get recommendations
+        tracker.process_meal_data()
 
-            # Render results template
-            return render_template('main.html',
-                                    user_input=tracker.get_ingredients(),
-                                    group_input=tracker.get_ingredients_group(),
-                                    recommendations_user=tracker.get_recommendations(tracker.get_ingredients(), None),
-                                    recommendations_group=tracker.get_recommendations(tracker.get_ingredients_group(), None),
-                                    new_meals=tracker.new_meals())
+        # Render results template
+        return render_template('main.html',
+                                user_input=tracker.get_ingredients(),
+                                group_input=tracker.get_ingredients_group(),
+                                recommendations_user=tracker.get_recommendations(tracker.get_ingredients(), None),
+                                recommendations_group=tracker.get_recommendations(tracker.get_ingredients_group(), None),
+                                new_meals=tracker.new_meals())
     else:
         return render_template('index.html', message="Login failed. Please check your credentials.")
 
