@@ -59,14 +59,7 @@ class MealConnector:
         recommendations_group = self.get_recommendations(group_input, cosine_sim_group)
         new_meals = self.new_meals()
 
-        print(user_input)
-        print(group_input)
-        print("\nRecommended Meals (Based on User Input):")
-        print(recommendations_user)
-        print("\nRecommended Meals (Based on Group Input):")
-        print(recommendations_group)
-        print("\nRecently Added Meals:")
-        print(new_meals)
+        return user_input, group_input, recommendations_user, recommendations_group,new_meals
 
     # Define a function to get meal recommendations based on user preferences
     def get_recommendations(self, user_input, cosine_sim):
