@@ -17,9 +17,33 @@
             <li><i class="fa-solid fa-gear"></i><a href="{{url_for('account')}}">Account</a></li>
         </ul>
     </div>
-    <p>This is the meals Page
 
+    <p>
+
+        <h1>{{ recipe_Name[0] }}</h1>
+
+        <p>{{ recipe_Description[0] }}</p>
+        
+        <h2>Ingredients:</h2>
+        <ul>
+            {% for ingredient in recipe_Ingredients[0].split('\n') %}
+                <li>{{ ingredient }}</li>
+            {% endfor %}
+        </ul>
+        
+        <h2>Instructions:</h2>
+        <p>{{ recipe_Instructions[0] }}</p>
+        
+        <h2>Nutritional Information:</h2>
+        <ul>
+            <li>Calories: {{ recipe_Calories[0] }}</li>
+            <li>Prep Time: {{ recipe_PrepTime[0] }} minutes</li>
+            <li>Cook Time: {{ recipe_CookTime[0] }} minutes</li>
+            <li>Serving Size: {{ recipe_ServingSize[0] }}</li>
+        </ul>
+        
     </p>
+
 
 </body>
 </html>

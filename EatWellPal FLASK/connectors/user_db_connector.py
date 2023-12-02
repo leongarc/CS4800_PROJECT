@@ -5,16 +5,13 @@
 
 import sqlite3
 from flask_login import UserMixin
-import os
-database_path = os.path.join(os.getcwd() + '/databases/users.db')
 
 
 class AccountManagement(UserMixin):
     
     #initialize variables
-    def __init__(self, database= database_path):
-        self.database = database
-        self.conn = sqlite3.connect(self.database)
+    def __init__(self):
+        self.conn = sqlite3.connect('database.db')
         self.cur = self.conn.cursor()
         
         

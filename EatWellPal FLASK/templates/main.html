@@ -24,8 +24,42 @@
             Welcome, {{username}}!
         </b>
     </h1>
-    <p>
-        This is the main/home page   
-    </p>
+
+    <h2>Top Picks for {{username}}:</h2>
+    <ul>
+        {% for recommendation in recommendations_user %}
+            <li>
+                <a href = "{{ url_for('meals_data',recommendation_id = recommendation) }}">
+                {{ recommendation }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Trending Now:</h2>
+    <ul>
+        {% for recommendation in recommendations_group %}
+            <li>
+                <a href = "{{ url_for('meals_data', recommendation_id = recommendation) }}">
+                {{ recommendation }}
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+
+    <h2>Recently Added:</h2>
+    {% if not new_meals.empty %}
+        <ul>
+            {% for index, row in new_meals.iterrows() %}
+                <li>
+                    <a href="{{ url_for('meals', recommendation_id=row['id']) }}">
+                        {{ row['RecipeName'] }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No new meals available.</p>
+    {% endif %}
 </body>
 </html>

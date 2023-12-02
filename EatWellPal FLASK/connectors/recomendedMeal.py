@@ -5,14 +5,10 @@ import pandas as pd
 from datetime import datetime, date
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
-import os
-
 
 class MealConnector:
-    def __init__(self, food_db_name, intake_db_name, users_db_name):
-        self.food_db_name = food_db_name
-        self.intake_db_name = intake_db_name
-        self.users_db_name = users_db_name
+    def __init__(self, db_name):
+        self.db_name = db_name
         self.user_id = None
         self.meal_df = None
         self.tfidf_vectorizer = None
@@ -21,8 +17,7 @@ class MealConnector:
 
     def create_meal_dataframe(self):
         # Connect to the SQLite database and fetch meal data
-        database_path = os.path.join(os.getcwd() + '/databases/meals.db')
-        conn = sqlite3.connect(database_path)
+        conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
         cursor.execute('SELECT RecipeName, Ingredients FROM recipes')
         data = cursor.fetchall()
@@ -75,25 +70,23 @@ class MealConnector:
 
     def new_meals(self):
         # Connect to the SQLite database and fetch meal data
-        database_path = os.path.join(os.getcwd() + '/databases/meals.db')
-        conn = sqlite3.connect(database_path)
+        conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
-        cursor.execute('SELECT RecipeName, id FROM recipes WHERE RecipeName <> "" ORDER BY ID DESC LIMIT 10')
+        cursor.execute('SELECT RecipeName, id FROM recipes ORDER BY ID DESC LIMIT 10')
         data = cursor.fetchall()
         conn.close()
 
         new_meal = []
 
-        for recipe_name, id in data:
-            if recipe_name and id:
-                new_meal.append((id, recipe_name))
-
-        return pd.DataFrame(new_meal)
+        if data:
+            new_meal = [(id, recipe_name) for recipe_name, id in data if recipe_name and id]
+            return pd.DataFrame(new_meal)
+        else:
+            return pd.DataFrame()
     
 
     def get_ingredients_group(self):
-        database_path = os.path.join(os.getcwd() + '/databases/calorie_intake.db')
-        intake_conn = sqlite3.connect(database_path)
+        intake_conn = sqlite3.connect(self.db_name)
         intake_cursor = intake_conn.cursor()
 
         intake_cursor.execute("SELECT FoodName FROM calorie_intake WHERE Timestamp >= DATE('now', '-30 days');" )
@@ -108,8 +101,7 @@ class MealConnector:
             return ''
         
     def get_ingredients(self):
-        database_path = os.path.join(os.getcwd() + '/databases/calorie_intake.db')
-        intake_conn = sqlite3.connect(database_path)
+        intake_conn = sqlite3.connect(self.db_name)
         intake_cursor = intake_conn.cursor()
 
         intake_cursor.execute("SELECT FoodName FROM calorie_intake WHERE user_id = ? and Timestamp >= DATE('now', '-10 days');",(self.user_id,) )
@@ -123,3 +115,35 @@ class MealConnector:
         else:
             return ''
             
+    def login(self, username, password):
+        user_conn = sqlite3.connect(self.db_name)
+        user_cursor = user_conn.cursor()
+        user_cursor.execute("SELECT user_id FROM users WHERE username = ? AND password = ?", (username, password))
+        result = user_cursor.fetchone()
+        user_conn.close()
+        if result:
+            self.user_id = result[0]
+        return self.user_id
+
+    def get_meal_data_by_column(self, recipe_id, column_name):
+        meal_conn = sqlite3.connect(self.db_name)
+        meal_cursor = meal_conn.cursor()
+    
+        query = f"SELECT {column_name} FROM recipes WHERE RecipeName = ?"
+        meal_cursor.execute(query, (recipe_id,))
+    
+        result = meal_cursor.fetchone()
+        if result:
+            meal_conn.close()
+        
+        return result
+
+    def add_meal_intake(self, recipe_id):
+        user_conn = sqlite3.connect(self.db_name)
+        user_cursor = user_conn.cursor()
+        user_cursor.execute("INSERT INTO ", (recipe_id))
+        result = user_cursor.fetchone()
+        user_conn.close()
+        if result:
+            self.user_id = result[0]
+        return self.user_id

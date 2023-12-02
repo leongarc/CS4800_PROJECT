@@ -151,14 +151,14 @@ def main():
 
     if log_user is not None:
         # Create an instance of MealConnector
-        tracker = recomendedMeal.MealConnector("ingredients.db", "calorie_intake.db", "users.db")
+        tracker = recomendedMeal.MealConnector("database.db")
 
         # Process meal data, initialize TF-IDF, and get recommendations
         tracker.process_meal_data()
 
         # Render results template
         return render_template('main.html',
-                               log_user,
+                                log_user=log_user,
                                 user_input=tracker.get_ingredients(),
                                 group_input=tracker.get_ingredients_group(),
                                 recommendations_user=tracker.get_recommendations(tracker.get_ingredients(), None),
@@ -168,10 +168,22 @@ def main():
         return render_template('index.html', message="Login failed. Please check your credentials.")
 
     
-@app.route('/meals')
+@app.route('/meals_data/<string:recommendation_id>')
 @login_required
-def meals():
-    return render_template('meals.html')
+def meals_data(recommendation_id):
+    tracker = recomendedMeal.MealConnector("database.db")
+
+    return render_template('meals_data.html', 
+                           recipe_Name=tracker.get_meal_data_by_column(recommendation_id, 'RecipeName'),
+                           recipe_Description=tracker.get_meal_data_by_column(recommendation_id, 'Description'),
+                           recipe_Instructions=tracker.get_meal_data_by_column(recommendation_id, 'instruction'),
+                           recipe_Ingredients=tracker.get_meal_data_by_column(recommendation_id, 'ingredients'),
+                           recipe_Calories=tracker.get_meal_data_by_column(recommendation_id, 'Calories'),
+                           recipe_ServingSize=tracker.get_meal_data_by_column(recommendation_id, 'ServingSize'),
+                           recipe_CookTime=tracker.get_meal_data_by_column(recommendation_id, 'CookTime'),
+                           recipe_PrepTime=tracker.get_meal_data_by_column(recommendation_id, 'PrepTime'),
+                           )
+
 
 @app.route('/progress')
 @login_required
@@ -182,6 +194,11 @@ def progress():
 @login_required
 def favorites():
     return render_template('favorites.html')
+
+@app.route('/meals')
+@login_required
+def meals():
+    return render_template('meals.html')
 
 
 
