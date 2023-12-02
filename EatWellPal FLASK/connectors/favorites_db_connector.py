@@ -6,7 +6,6 @@ import sqlite3
 import os
 import json
 db_path = os.path.join(os.getcwd() + '/databases/users.db')
-print(db_path)
 
 class FavoritesDBConnector:
 
