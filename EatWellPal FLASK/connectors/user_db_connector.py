@@ -90,3 +90,12 @@ class AccountManagement(UserMixin):
                             gender = ?\
                         WHERE user_id = ?", (fname, lname, bweight, height, goal, allergies, calorie_intake, gender, str(userid)))
         self.conn.commit()
+
+
+    def delete_account(self, user_id):
+        self.cur.execute("DELETE FROM users\
+            WHERE user_id = ?", (str(user_id)))
+        self.cur.execute("DELETE FROM userinfo\
+            WHERE user_id = ?", (str(user_id)))
+        
+        self.conn.commit()

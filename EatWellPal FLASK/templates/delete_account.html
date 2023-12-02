@@ -23,34 +23,16 @@ The info is passed from the main.py. -->
         </ul>
     </div>
 
-    <div class="account-container">
-        <div class="account-box">
-            <p for="firstName">First Name: {{log_user[0]}}</p> <br>
-    
-            <p for="lastName">Last Name: {{log_user[1]}}</p> <br>
-    
-            <p for="weight">Weight: {{log_user[2]}}lbs</p> <br>
-    
-            <p for="heigt">Height: {{log_user[3]}}</p> <br>
 
-            <p for ="goal">Your target Weight: {{log_user[4]}}</p> <br>
-
-            <p for ="allergies">Allergies: {{log_user[5]}}</p> <br>
-
-        </div>
-    </div>
     <div class="container">
         <div class="center">
-            <a href="{{url_for('edit_account')}}"><button type="submit">Edit Account</button></a>
+            <form method="post" action="{{ url_for('delete_account') }}">
+                <p>Are you sure you want to delete your Account?</p>
+                <button type="submit" name="submit_button" value="Yes">Yes</button>
+                <button type="submit" name="submit_button" value="No">No</button>
+            </form>
         </div>
     </div>
-
-    <div class="container">
-        <div class="center_delete">
-            <a href="{{url_for('delete_account')}}"><button type="submit">Delete Account?</button></a>
-        </div>
-    </div>
-
 
 </body>
 </html>
