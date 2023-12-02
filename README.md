@@ -9,9 +9,10 @@ See requirements.txt
 ## Usage
 1) Head over to EatWellPal FLASK directory
 2) Run main.py to start app
-3) Login or create an account
-4) After logging in or signing up, you'll reach the Home Page
-5) This is your main page where you can navigate to account settings, Calorie Tracker, Favorites, and Progress Page. This page also shows your recommened meals for the day.
+3) Go to browser of choice and in the URL enter 127.0.0.1:5000
+4) Login or create an account
+5) After logging in or signing up, you'll reach the Home Page
+6) This is your main page where you can navigate to account settings, Calorie Tracker, Favorites, and Progress Page. This page also shows your recommened meals for the day.
 
 Calorie Tracker: You'll be prompted to enter the name of the meal plus the weight. Calories are then automatically calculated and added into your calorie intake progress.
 
