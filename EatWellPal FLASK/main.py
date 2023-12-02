@@ -37,12 +37,11 @@ def login():
 
         if user_id:
           #uses flask functions to handle login in a user for a session
-            print(type(user_id))
             user_obj = users.get_info(user_id)
             login_user(user_obj)  # Log in the user
-            return redirect(url_for('main'))  # Redirect to a dashboard or profile page
+            return redirect(url_for('main'))  # Redirect to a home
 
-        flash('Login Error: Invaldid Username or Password')
+        flash('Login Error: Invalid Username or Password')
 
 
     return render_template('login.html')
@@ -143,12 +142,30 @@ def edit_account():
     #in the page thus the method is GET
     return render_template('edit_account.html')
 
+
+@app.route('/delete_account', methods=['GET', 'POST'])
+@login_required
+def delete_account():
+    if request.method == 'POST':
+        # The user clicked on either Yes or No
+        if request.form['submit_button'] == 'Yes':
+            # User clicked Yes, delete the account
+            user.AccountManagement().delete_account(current_user.id)  
+            flash('Your account has been deleted.', 'success')
+            return redirect(url_for('login')) 
+        else:
+            # User clicked No, redirect back to the account page
+            return redirect(url_for('account'))
+
+    return render_template('delete_account.html')
+
     
 @app.route('/main', methods=['GET', 'POST'])
 @login_required
 def main():
     log_user = user.AccountManagement()
     log_user = log_user.about_user(current_user.id)
+    print(log_user)
 
     if log_user is not None:
         # Create an instance of MealConnector
@@ -165,8 +182,8 @@ def main():
                                 recommendations_user=tracker.get_recommendations(tracker.get_ingredients(), None),
                                 recommendations_group=tracker.get_recommendations(tracker.get_ingredients_group(), None),
                                 new_meals=tracker.new_meals())
-    else:
-        return render_template('index.html', message="Login failed. Please check your credentials.")
+    #else:
+        #return render_template('index.html', message="Login failed. Please check your credentials.")
 
     
 @app.route('/meals_data/<string:recommendation_id>')
