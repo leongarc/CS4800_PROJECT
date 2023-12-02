@@ -5,6 +5,8 @@ import pandas as pd
 from datetime import datetime, date
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
+import os
+
 
 class MealConnector:
     def __init__(self, food_db_name, intake_db_name, users_db_name):
@@ -19,7 +21,8 @@ class MealConnector:
 
     def create_meal_dataframe(self):
         # Connect to the SQLite database and fetch meal data
-        conn = sqlite3.connect('meals.db')
+        database_path = os.path.join(os.getcwd() + '/databases/meals.db')
+        conn = sqlite3.connect(database_path)
         cursor = conn.cursor()
         cursor.execute('SELECT RecipeName, Ingredients FROM recipes')
         data = cursor.fetchall()
@@ -72,7 +75,8 @@ class MealConnector:
 
     def new_meals(self):
         # Connect to the SQLite database and fetch meal data
-        conn = sqlite3.connect('meals.db')
+        database_path = os.path.join(os.getcwd() + '/databases/meals.db')
+        conn = sqlite3.connect(database_path)
         cursor = conn.cursor()
         cursor.execute('SELECT RecipeName, id FROM recipes WHERE RecipeName <> "" ORDER BY ID DESC LIMIT 10')
         data = cursor.fetchall()
@@ -88,7 +92,8 @@ class MealConnector:
     
 
     def get_ingredients_group(self):
-        intake_conn = sqlite3.connect(self.intake_db_name)
+        database_path = os.path.join(os.getcwd() + '/databases/calorie_intake.db')
+        intake_conn = sqlite3.connect(database_path)
         intake_cursor = intake_conn.cursor()
 
         intake_cursor.execute("SELECT FoodName FROM calorie_intake WHERE Timestamp >= DATE('now', '-30 days');" )
@@ -103,7 +108,8 @@ class MealConnector:
             return ''
         
     def get_ingredients(self):
-        intake_conn = sqlite3.connect(self.intake_db_name)
+        database_path = os.path.join(os.getcwd() + '/databases/calorie_intake.db')
+        intake_conn = sqlite3.connect(database_path)
         intake_cursor = intake_conn.cursor()
 
         intake_cursor.execute("SELECT FoodName FROM calorie_intake WHERE user_id = ? and Timestamp >= DATE('now', '-10 days');",(self.user_id,) )
@@ -117,13 +123,3 @@ class MealConnector:
         else:
             return ''
             
-    def login(self, username, password):
-        user_conn = sqlite3.connect(self.users_db_name)
-        user_cursor = user_conn.cursor()
-        user_cursor.execute("SELECT user_id FROM users WHERE username = ? AND password = ?", (username, password))
-        result = user_cursor.fetchone()
-        user_conn.close()
-        if result:
-            self.user_id = result[0]
-        return self.user_id
-
