@@ -44,34 +44,41 @@
         
     </p>
 
-   <form id="intakeForm" method="POST" action="{{ url_for('add_to_intake',recipe_Name=recipe_Name[0]) }}">
-    <input type="hidden" name="recipe_id" value="{{ recipe_id }}">
-    <button type="button" onclick="openModal()">Add to Intake</button>
-    </form>
 
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <label for="servingSize">Enter Serving Size:</label>
-            <input type="text" id="servingSize" name="servingSize">
-            <button type="submit" onclick="submitForm()">Submit</button>
-        </div>
-    </div>
+    <label for="servingAmount">Enter Serving Amount Ate:</label>
+    <input type="number" id="servingAmount" name="servingAmount" required>
+
+    <button type="button" onclick="addToDatabase()">Add to Database</button>
 
     <script>
-        function openModal() {
-            var modal = document.getElementById('myModal');
-            modal.style.display = 'block';
-        }
-    
-        function closeModal() {
-            var modal = document.getElementById('myModal');
-            modal.style.display = 'none';
-        }
-    
-        function submitForm() {
-            document.getElementById('intakeForm').submit();
+        function addToDatabase() {
+            var recipeName = "{{ recipe_Name[0] }}";
+            var calories = "{{ recipe_Calories[0] }}";
+            var serving = "{{ recipe_ServingSize[0] }}"
+            var servingAmount = document.getElementById('servingAmount').value;
+
+            fetch('/add_to_intake', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    recipeName: recipeName,
+                    calories: calories,
+                    seerving: serving,
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data received:', data);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
         }
     </script>
-</body>
-</html>

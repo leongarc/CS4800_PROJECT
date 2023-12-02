@@ -1,6 +1,6 @@
 #Authors: Everyone
 
-from flask import Flask, render_template, url_for, request, redirect, flash
+from flask import Flask, jsonify, render_template, url_for, request, redirect, flash
 from connectors import user_db_connector as user
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from connectors import recomendedMeal
@@ -196,30 +196,49 @@ def progress():
 def favorites():
     return render_template('favorites.html')
 
-@app.route('/meals')
+@app.route('/meals', methods=['GET', 'POST'])
 @login_required
 def meals():
-    return render_template('meals.html')
+    if request.method == 'POST':
+        tracker = recomendedMeal.MealConnector("database.db")
+        search_query = request.form.get('searchQuery')
+
+        return render_template('meals.html', search_query=tracker.search_meal(search_query))
+    else:
+        return render_template('meals.html')
+
 
 @app.route('/add_to_intake/<string:recipe_Name>', methods=['POST'])
 def add_to_intake(recipe_Name):
     if request.method == 'POST':
-        recipe_id = request.form.get('recipe_id')
-        serving_ate = request.form.get('servingSize')
-        tracker = recomendedMeal.MealConnector("database.db")
+        data = request.get_json()
 
-        serving_size = tracker.get_meal_data_by_column(recipe_Name, 'ServingSize')
-        recipe_calories = tracker.get_meal_data_by_column(recipe_Name, 'Calories')
+        recipe_Name = data.get('recipeName')
+        recipe_calories = data.get('calories')
+        serving_amount = data.get('servingAmount')
+
+        calories_ate = serving_amount * recipe_calories
+
+        result = update_intake(recipe_Name, calories_ate, serving_amount)
+
+        return jsonify({'result': result})
+
+    return "Invalid Request", 400
+
+
+def update_intake(recipe_Name, calories_ate, serving_amount):
+    try:
         user_id = current_user.id 
         time = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
 
-        calories_ate = serving_ate * (recipe_calories/serving_size)
+        tracker = recomendedMeal.MealConnector("database.db")
+        tracker.add_meal_intake(recipe_Name,user_id,serving_amount,calories_ate,time)
 
-        tracker.add_meal_intake(recipe_Name,user_id,serving_ate,calories_ate,time)
-
-        return redirect(url_for('recipe_details', recipe_id=recipe_id))
-
-    return "Invalid Request", 400
+        return "Intake update successful"
+    except Exception as e:
+        # Handle exceptions (e.g., database errors)
+        print(f"Error updating intake: {e}")
+        return "Intake update failed"
 
 if __name__ == '__main__':
     app.run(debug=True)

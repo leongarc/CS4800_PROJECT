@@ -17,9 +17,73 @@
             <li><i class="fa-solid fa-gear"></i><a href="{{url_for('account')}}">Account</a></li>
         </ul>
     </div>
-    <p>This is the meals Page
-
-    </p>
+        <h1>Recipe Search</h1>
+    
+        <form id="searchForm" method="POST" action="/meals">
+            <label for="searchQuery">Enter Recipe Name:</label>
+            <input type="text" id="searchQuery" name="searchQuery" required>
+            <button type="submit">Search</button>
+        </form>
+    
+        <p>{{search_query}}</p>
+        <div id="searchResults">
+            <ul>
+                {% for search in search_query %}
+                    <li>
+                        <a href = "{{ url_for('meals_data',recommendation_id = search['recommendation']) }}">
+                        {{ search['recipe_name'] }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    
+        <script>
+            document.getElementById('searchForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+    
+                var searchQuery = document.getElementById('searchQuery').value;
+    
+                fetch('/meals', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'searchQuery=' + encodeURIComponent(searchQuery),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displaySearchResults(data.results);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+            });
+    
+            function displaySearchResults(results) {
+                var searchResultsContainer = document.getElementById('searchResults');
+                searchResultsContainer.innerHTML = ''; // Clear previous results
+    
+                if (results.length > 0) {
+                    var resultList = document.createElement('ul');
+    
+                    results.forEach(function(result) {
+                        var listItem = document.createElement('li');
+                        listItem.textContent = result.recipe_name;
+                        resultList.appendChild(listItem);
+                    });
+    
+                    searchResultsContainer.appendChild(resultList);
+                } else {
+                    searchResultsContainer.textContent = 'No matching recipes found.';
+                }
+            }
+        </script>
 
 </body>
 </html>
