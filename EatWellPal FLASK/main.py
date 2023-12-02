@@ -4,6 +4,7 @@ from flask import Flask, render_template, url_for, request, redirect, flash
 from connectors import user_db_connector as user
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
 from connectors import recomendedMeal
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -200,8 +201,25 @@ def favorites():
 def meals():
     return render_template('meals.html')
 
+@app.route('/add_to_intake/<string:recipe_Name>', methods=['POST'])
+def add_to_intake(recipe_Name):
+    if request.method == 'POST':
+        recipe_id = request.form.get('recipe_id')
+        serving_ate = request.form.get('servingSize')
+        tracker = recomendedMeal.MealConnector("database.db")
 
+        serving_size = tracker.get_meal_data_by_column(recipe_Name, 'ServingSize')
+        recipe_calories = tracker.get_meal_data_by_column(recipe_Name, 'Calories')
+        user_id = current_user.id 
+        time = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
 
+        calories_ate = serving_ate * (recipe_calories/serving_size)
+
+        tracker.add_meal_intake(recipe_Name,user_id,serving_ate,calories_ate,time)
+
+        return redirect(url_for('recipe_details', recipe_id=recipe_id))
+
+    return "Invalid Request", 400
 
 if __name__ == '__main__':
     app.run(debug=True)
