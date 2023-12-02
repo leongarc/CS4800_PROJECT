@@ -6,7 +6,6 @@ import sqlite3
 import os
 import json
 db_path = os.path.join(os.getcwd() + '/databases/users.db')
-print(db_path)
 
 class FavoritesDBConnector:
 
@@ -35,18 +34,24 @@ class FavoritesDBConnector:
     # Still need to work on update_favorites
     def update_favorties(self, data):
         current_favorites = self.get_favorites()
+        print(current_favorites[0])
         if current_favorites is None:
             self.cur.execute("UPDATE userinfo\
                               SET favorites = ?\
                               WHERE user_id = ?", (json.dumps(data), str(self.user_id)))
-            self.conn.commit()
         else:
+            element = 0
+            c_f = json.dumps(current_favorites[0])
+            print(c_f)
             for position in data:
-                print(position)
                 self.cur.execute("UPDATE userinfo\
-                                  SET favorites = json_set(?,'$[#]',?)\
-                                  WHERE user_id = ?", (current_favorites[0], position, str(self.user_id)))
-                self.conn.commit()
+                                SET favorites = json_set(?,'$[#]',?)\
+                                WHERE user_id = ?", (c_f, position, str(self.user_id)))
+                print(position)
+                
+                c_f += str(position)
+                element += 1
+        self.conn.commit()
 
     def close_connection(self):
         self.conn.close()
