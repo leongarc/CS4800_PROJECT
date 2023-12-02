@@ -138,12 +138,8 @@ class MealConnector:
         
         return result
 
-    def add_meal_intake(self, recipe_id):
+    def add_meal_intake(self,recipe_name,user_id,serving,recipe_calories,time):
         user_conn = sqlite3.connect(self.db_name)
         user_cursor = user_conn.cursor()
-        user_cursor.execute("INSERT INTO ", (recipe_id))
-        result = user_cursor.fetchone()
-        user_conn.close()
-        if result:
-            self.user_id = result[0]
-        return self.user_id
+        user_cursor.execute("INSERT INTO calorie_intake (FoodName, Quantity, TotalCalories, Timestamp, user_id) VALUES (?,?,?,?,?)", (recipe_name,serving,recipe_calories,time,user_id))
+        user_conn.commit()
