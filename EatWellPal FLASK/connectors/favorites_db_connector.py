@@ -9,15 +9,15 @@ db_path = os.path.join(os.getcwd() + '/databases/users.db')
 class FavoritesDBConnector:
 
     def __init__(self, path=db_path):
-        self.user_db = path
-        self.conn = self.connect_to_db()
+        self.path = path
+        self.conn = sqlite3.connect(self.path)
         self.cur = self.conn.cursor()
     
     def connect_to_db(self):
         try:
             conn = sqlite3.connect(self.user_db)
             return conn
-        except OSError:
+        except sqlite3.OperationalError:
             print("DB does not exist/Error opening")
 
     def get_favorites(self, user_id):
@@ -25,10 +25,9 @@ class FavoritesDBConnector:
         # need to set up favorites data in a JSON format since arrays aren't suppported in SQLite
         self.cur.execute("SELECT favorites FROM userinfo WHERE user_id = ?", (str(user_id)))
         result = self.cur.fetchone()
-        if result: 
+        if result is not None: 
             return result
         else:
-            result = None
             return result
     # Still need to work on update_favorites
     def update_favorites():
