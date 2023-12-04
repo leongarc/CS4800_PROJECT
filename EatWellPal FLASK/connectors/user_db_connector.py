@@ -86,7 +86,7 @@ class AccountManagement(UserMixin):
                             height = ?,\
                             goal = ?,\
                             allergies = ?,\
-                            calorie_intake = ?\
+                            calorie_intake = ?,\
                             gender = ?\
                         WHERE user_id = ?", (fname, lname, bweight, height, goal, allergies, calorie_intake, gender, str(userid)))
         self.conn.commit()
