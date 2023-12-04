@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meals</title>
     <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -22,68 +23,46 @@
         <form id="searchForm" method="POST" action="/meals">
             <label for="searchQuery">Enter Recipe Name:</label>
             <input type="text" id="searchQuery" name="searchQuery" required>
-            <button type="submit">Search</button>
+            <button type="submit" onclick="search()">Search</button>
         </form>
-    
-        <p>{{search_query}}</p>
-        <div id="searchResults">
-            <ul>
-                {% for search in search_query %}
-                    <li>
-                        <a href = "{{ url_for('meals_data',recommendation_id = search['recommendation']) }}">
-                        {{ search['recipe_name'] }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    
-        <script>
-            document.getElementById('searchForm').addEventListener('submit', function(event) {
-                event.preventDefault(); // Prevent the default form submission
-    
-                var searchQuery = document.getElementById('searchQuery').value;
-    
-                fetch('/meals', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'searchQuery=' + encodeURIComponent(searchQuery),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    displaySearchResults(data.results);
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-            });
-    
-            function displaySearchResults(results) {
-                var searchResultsContainer = document.getElementById('searchResults');
-                searchResultsContainer.innerHTML = ''; // Clear previous results
-    
-                if (results.length > 0) {
-                    var resultList = document.createElement('ul');
-    
-                    results.forEach(function(result) {
-                        var listItem = document.createElement('li');
-                        listItem.textContent = result.recipe_name;
-                        resultList.appendChild(listItem);
-                    });
-    
-                    searchResultsContainer.appendChild(resultList);
-                } else {
-                    searchResultsContainer.textContent = 'No matching recipes found.';
-                }
-            }
-        </script>
+
+        <div id="resultsContainer"></div>
 
 </body>
+<script>
+$(document).ready(function () {
+    // Intercept form submission
+    $('#searchForm').submit(function (e) {
+        e.preventDefault(); 
+        search(); 
+    });
+
+function search() {
+    console.log('Button clicked!');
+    var searchQuery = $('#searchQuery').val();
+
+    $.ajax({
+        type: 'POST',
+        url: '/meals' 
+        data: {searchQuery: searchQuery}
+
+        success: function(data) {
+            console.log('Data received:', data);
+            var resultsHtml = '<ul>';
+                data.forEach(function (item) {
+                    resultsHtml += '<li>' + item.RecipeName + '</li>';
+                });
+                resultsHtml += '</ul>';
+
+                $('#resultsContainer').html(resultsHtml);
+            },
+
+        error: function(error) {
+            console.error('There was a problem with the fetch operation:', error);
+            // Handle error if needed
+        }
+    });
+}
+});
+</script>
 </html>

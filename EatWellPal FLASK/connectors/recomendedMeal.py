@@ -163,9 +163,7 @@ class MealConnector:
         meal_cursor = meal_conn.cursor()
 
         meal_cursor.execute("SELECT RecipeName FROM recipes WHERE RecipeName LIKE ?", ('%' + (search_query or '') + '%',))
-
         search_results = meal_cursor.fetchall()
-
         meal_conn.close()
 
         return search_results

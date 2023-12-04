@@ -220,12 +220,13 @@ def favorites():
 @login_required
 def meals():
     if request.method == 'POST':
-        tracker = recomendedMeal.MealConnector("database.db")
-        search_query = request.form.get('searchQuery')
+        search_query = request.get_json().get('searchQuery', '')
 
-        return render_template('meals.html', search_query=tracker.search_meal(search_query))
-    else:
-        return render_template('meals.html')
+        tracker = recomendedMeal.MealConnector("database.db")
+        results=tracker.search_meal(search_query)
+        return jsonify(results)
+
+    return render_template('meals.html')
 
 # made by uriel
 @app.route('/add_to_intake/<string:recipe_Name>', methods=['GET', 'POST'])
