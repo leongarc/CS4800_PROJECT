@@ -99,3 +99,14 @@ class AccountManagement(UserMixin):
             WHERE user_id = ?", (str(user_id)))
         
         self.conn.commit()
+
+    def username(self, user_id):
+        self.cur.execute("SELECT first_name, last_name FROM userinfo WHERE user_id = ?", (str(user_id)))
+        results = self.cur.fetchone()
+        if results: 
+            name_info = [result for result in results]
+            user_name = '  '.join(name_info)
+            return user_name
+        else:
+            results = None
+            return results

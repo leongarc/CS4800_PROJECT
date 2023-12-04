@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,41 +45,67 @@
         
     </p>
 
-
-    <label for="servingAmount">Enter Serving Amount Ate:</label>
-    <input type="number" id="servingAmount" name="servingAmount" required>
-
     <button type="button" onclick="addToDatabase()">Add to Database</button>
+    <button type="button" onclick="addToFavorites()">Add to Favorites</button>
+
 
     <script>
+        $(document).ready(function() {
+            $("#addToDatabaseBtn").click(function() {
+                addToDatabase();
+            });
+        });
+
+        $(document).ready(function() {
+            $("#addToFavoritesBtn").click(function() {
+                addToFavorites();
+            });
+        });
         function addToDatabase() {
+            console.log('Button clicked!');
             var recipeName = "{{ recipe_Name[0] }}";
             var calories = "{{ recipe_Calories[0] }}";
-            var serving = "{{ recipe_ServingSize[0] }}"
-            var servingAmount = document.getElementById('servingAmount').value;
 
-            fetch('/add_to_intake', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+
+            $.ajax({
+                type: 'POST',
+                url: '/add_to_intake/' + encodeURIComponent(recipeName),
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({
                     recipeName: recipeName,
                     calories: calories,
-                    seerving: serving,
                 }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                success: function(data) {
+                    console.log('Data received:', data);
+                    // Handle success if needed
+                },
+                error: function(error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                    // Handle error if needed
                 }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Data received:', data);
-            })
-            .catch(error => {
-                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+
+        function addToFavorites() {
+            console.log('Button clicked!');
+            var recipeName = "{{ recipe_Name[0] }}";
+
+
+            $.ajax({
+                type: 'POST',
+                url: '/add_to_favorites/' + encodeURIComponent(recipeName),
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({
+                    recipeName: recipeName,
+                }),
+                success: function(data) {
+                    console.log('Data received:', data);
+                    // Handle success if needed
+                },
+                error: function(error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                    // Handle error if needed
+                }
             });
         }
     </script>

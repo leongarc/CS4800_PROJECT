@@ -69,7 +69,7 @@ class MealConnector:
         return self.meal_df['Name'].iloc[top_meal_indices]
 
     def new_meals(self):
-        # Connect to the SQLite database and fetch meal data
+        # Connect to the SQLite database and fetch new meal data
         conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
         cursor.execute('SELECT RecipeName, id FROM recipes ORDER BY ID DESC LIMIT 10')
@@ -86,6 +86,7 @@ class MealConnector:
     
 
     def get_ingredients_group(self):
+        # Connect to the SQLite database and fetch calorie intake from last 30 days
         intake_conn = sqlite3.connect(self.db_name)
         intake_cursor = intake_conn.cursor()
 
@@ -101,6 +102,7 @@ class MealConnector:
             return ''
         
     def get_ingredients(self):
+        # Connect to the SQLite database and fetch users intake from last 10 days
         intake_conn = sqlite3.connect(self.db_name)
         intake_cursor = intake_conn.cursor()
 
@@ -116,6 +118,7 @@ class MealConnector:
             return ''
             
     def login(self, username, password):
+        # login code for personal testing 
         user_conn = sqlite3.connect(self.db_name)
         user_cursor = user_conn.cursor()
         user_cursor.execute("SELECT user_id FROM users WHERE username = ? AND password = ?", (username, password))
@@ -126,6 +129,7 @@ class MealConnector:
         return self.user_id
 
     def get_meal_data_by_column(self, recipe_id, column_name):
+        # Connect to the SQLite database and fetch meal information
         meal_conn = sqlite3.connect(self.db_name)
         meal_cursor = meal_conn.cursor()
     
@@ -139,16 +143,22 @@ class MealConnector:
         return result
 
     def add_meal_intake(self,recipe_name,user_id,serving,recipe_calories,time):
+        # Connect to the SQLite database and input meal info eaten
         user_conn = sqlite3.connect(self.db_name)
         user_cursor = user_conn.cursor()
-        user_cursor.execute("SELECT count(*) FROM recipes GROUP BY ID")
+
+        user_cursor.execute("SELECT MAX(ID) FROM calorie_intake")
         result = user_cursor.fetchone()
-        if result:   
-            new_id = result +1
-        user_cursor.execute("INSERT INTO calorie_intake (ID,FoodName, Quantity, TotalCalories, Timestamp, user_id) VALUES (?,?,?,?,?)", (new_id,recipe_name,serving,recipe_calories,time,user_id))
+        if result[0] is not None:
+            new_id = result[0] + 1
+        else:
+            new_id = 1
+
+        user_cursor.execute("INSERT INTO calorie_intake (ID,FoodName, Quantity, TotalCalories, Timestamp, user_id) VALUES (?,?,?,?,?,?)", (new_id,recipe_name,serving,recipe_calories,time,user_id))
         user_conn.commit()
 
     def search_meal(self, search_query):
+        # Connect to the SQLite database and fetch meal data with search function
         meal_conn = sqlite3.connect(self.db_name)
         meal_cursor = meal_conn.cursor()
 
@@ -159,3 +169,14 @@ class MealConnector:
         meal_conn.close()
 
         return search_results
+
+    def add_meal_favorites(self,recipe_name,user_id):
+        # Connect to the SQLite database and input meal info eaten
+        user_conn = sqlite3.connect(self.db_name)
+        user_cursor = user_conn.cursor()
+
+        user_cursor.execute("SELECT id FROM recipes WHERE RecipeName LIKE ?", (recipe_name,))
+        result = user_cursor.fetchone()
+        if result:
+            user_cursor.execute("INSERT INTO Favorite_meals (User_id,FoodName,food_id) VALUES (?,?,?)", (user_id,recipe_name,result[0]))
+            user_conn.commit()

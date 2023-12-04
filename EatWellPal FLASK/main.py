@@ -159,12 +159,14 @@ def delete_account():
 
     return render_template('delete_account.html')
 
-    
+
+
+# made by uriel
 @app.route('/main', methods=['GET', 'POST'])
 @login_required
 def main():
     log_user = user.AccountManagement()
-    log_user = log_user.about_user(current_user.id)
+    log_user = log_user.username(current_user.id)
     print(log_user)
 
     if log_user is not None:
@@ -176,16 +178,16 @@ def main():
 
         # Render results template
         return render_template('main.html',
-                                log_user=log_user,
+                                username=log_user,
                                 user_input=tracker.get_ingredients(),
                                 group_input=tracker.get_ingredients_group(),
                                 recommendations_user=tracker.get_recommendations(tracker.get_ingredients(), None),
                                 recommendations_group=tracker.get_recommendations(tracker.get_ingredients_group(), None),
                                 new_meals=tracker.new_meals())
-    #else:
-        #return render_template('index.html', message="Login failed. Please check your credentials.")
+    else:
+        return render_template('index.html', message="Login failed. Please check your credentials.")
 
-    
+# made by uriel
 @app.route('/meals_data/<string:recommendation_id>')
 @login_required
 def meals_data(recommendation_id):
@@ -213,6 +215,7 @@ def progress():
 def favorites():
     return render_template('favorites.html')
 
+# made by uriel
 @app.route('/meals', methods=['GET', 'POST'])
 @login_required
 def meals():
@@ -224,38 +227,39 @@ def meals():
     else:
         return render_template('meals.html')
 
-
-@app.route('/add_to_intake/<string:recipe_Name>', methods=['POST'])
+# made by uriel
+@app.route('/add_to_intake/<string:recipe_Name>', methods=['GET', 'POST'])
 def add_to_intake(recipe_Name):
+
     if request.method == 'POST':
         data = request.get_json()
 
-        recipe_Name = data.get('recipeName')
+        user_id = current_user.id
+        time = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
         recipe_calories = data.get('calories')
-        serving_amount = data.get('servingAmount')
 
-        calories_ate = serving_amount * recipe_calories
+        tracker = recomendedMeal.MealConnector("database.db")
+        tracker.add_meal_intake(recipe_Name,user_id,'1',recipe_calories,time)
 
-        result = update_intake(recipe_Name, calories_ate, serving_amount)
+        return "Intake update successful"
 
-        return jsonify({'result': result})
+    return "Invalid Request", 400
+
+# made by uriel
+@app.route('/add_to_favorites/<string:recipe_Name>', methods=['GET', 'POST'])
+def add_to_favorites(recipe_Name):
+
+    if request.method == 'POST':
+        data = request.get_json()
+        user_id = current_user.id
+        tracker = recomendedMeal.MealConnector("database.db")
+        tracker.add_meal_favorites(recipe_Name,user_id)
+
+        return "Intake update successful"
 
     return "Invalid Request", 400
 
 
-def update_intake(recipe_Name, calories_ate, serving_amount):
-    try:
-        user_id = current_user.id 
-        time = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
-
-        tracker = recomendedMeal.MealConnector("database.db")
-        tracker.add_meal_intake(recipe_Name,user_id,serving_amount,calories_ate,time)
-
-        return "Intake update successful"
-    except Exception as e:
-        # Handle exceptions (e.g., database errors)
-        print(f"Error updating intake: {e}")
-        return "Intake update failed"
 
 if __name__ == '__main__':
     app.run(debug=True)
