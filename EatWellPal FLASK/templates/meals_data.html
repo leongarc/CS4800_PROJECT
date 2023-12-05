@@ -29,7 +29,9 @@
             {% if recipe_Ingredients %}
         <ul>
             {% for ingredient in recipe_Ingredients[0].split('\n') %}
-                <li>{{ ingredient }}</li>
+                {% if ingredient %}    
+                    <li>{{ ingredient }}</li>
+                {% endif%}
             {% endfor %}
         </ul>
         {% else %}
@@ -80,14 +82,6 @@
                     recipeName: recipeName,
                     calories: calories,
                 }),
-                success: function(data) {
-                    console.log('Data received:', data);
-                    // Handle success if needed
-                },
-                error: function(error) {
-                    console.error('There was a problem with the fetch operation:', error);
-                    // Handle error if needed
-                }
             });
         }
 
@@ -103,14 +97,6 @@
                 data: JSON.stringify({
                     recipeName: recipeName,
                 }),
-                success: function(data) {
-                    console.log('Data received:', data);
-                    // Handle success if needed
-                },
-                error: function(error) {
-                    console.error('There was a problem with the fetch operation:', error);
-                    // Handle error if needed
-                }
             });
         }
     </script>

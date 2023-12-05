@@ -120,7 +120,7 @@ class MealConnector:
     def get_ingredients(self):
         intake_conn = sqlite3.connect(self.intake_db_name)
         intake_cursor = intake_conn.cursor()
-        intake_cursor.execute("insert into calorie_intake (FoodName, Quantity, TotalCalories, Timestamp, user_id) values ('rice', '10','100','2023-11-23 11:30:00', '3'),('beans', '10','100','2023-11-23 11:31:00', '3'),('potatoes', '10','100','2023-11-23 11:33:00', '3')")
+        intake_cursor.execute("insert into calorie_intake (FoodName, Quantity, TotalCalories, Timestamp, user_id) values ('rice', '10','100','2023-11-23 11:30:00', '3'),('beans', '10','100','2023-12-4 11:31:00', '3'),('potatoes', '10','100','2023-12ba-4 11:33:00', '3')")
         intake_cursor.execute("SELECT FoodName FROM calorie_intake WHERE user_id = ? and Timestamp >= DATE('now', '-10 days');",(self.user_id,) )
         results = intake_cursor.fetchall()
         intake_conn.close()

@@ -16,7 +16,7 @@ class MealConnector:
         self.cosine_sim = None
 
     def create_meal_dataframe(self):
-        # Connect to the SQLite database and fetch meal data
+        # Connect to the SQLite database and fetch all meal name and ingredients
         conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
         cursor.execute('SELECT RecipeName, Ingredients FROM recipes')
@@ -36,7 +36,7 @@ class MealConnector:
         # Calculate the cosine similarity matrix
         self.cosine_sim = linear_kernel(self.tfidf_matrix, self.tfidf_matrix)
 
-    def process_meal_data(self):
+    def process_meal_data(self, user_id):
         # Fetch and create the DataFrame
         self.create_meal_dataframe()
 
@@ -44,7 +44,7 @@ class MealConnector:
         self.initialize_tfidf()
 
         # Take user input and provide meal recommendations
-        user_input = self.get_ingredients()
+        user_input = self.get_ingredients(user_id)
         group_input = self.get_ingredients_group()
 
         user_tfidf = self.tfidf_vectorizer.transform([user_input])
@@ -59,7 +59,7 @@ class MealConnector:
 
         return user_input, group_input, recommendations_user, recommendations_group,new_meals
 
-    # Define a function to get meal recommendations based on user preferences
+    # function to get meal recommendations based on user preferences
     def get_recommendations(self, user_input, cosine_sim):
         user_tfidf = self.tfidf_vectorizer.transform([user_input])
         cosine_scores = linear_kernel(user_tfidf, self.tfidf_matrix)
@@ -86,7 +86,7 @@ class MealConnector:
     
 
     def get_ingredients_group(self):
-        # Connect to the SQLite database and fetch calorie intake from last 30 days
+        # Connect to the SQLite database and fetch calorie intake from everyone within last 30 days
         intake_conn = sqlite3.connect(self.db_name)
         intake_cursor = intake_conn.cursor()
 
@@ -101,12 +101,11 @@ class MealConnector:
         else:
             return ''
         
-    def get_ingredients(self):
-        # Connect to the SQLite database and fetch users intake from last 10 days
+    def get_ingredients(self, user_id):
+        # Connect to the SQLite database and fetch the users intake from last 10 days
         intake_conn = sqlite3.connect(self.db_name)
         intake_cursor = intake_conn.cursor()
-
-        intake_cursor.execute("SELECT FoodName FROM calorie_intake WHERE user_id = ? and Timestamp >= DATE('now', '-10 days');",(self.user_id,) )
+        intake_cursor.execute("SELECT FoodName FROM calorie_intake WHERE user_id = ? and Timestamp >= DATE('now', '-10 days');",(user_id,) )
         results = intake_cursor.fetchall()
         intake_conn.close()
 
@@ -156,6 +155,7 @@ class MealConnector:
 
         user_cursor.execute("INSERT INTO calorie_intake (ID,FoodName, Quantity, TotalCalories, Timestamp, user_id) VALUES (?,?,?,?,?,?)", (new_id,recipe_name,serving,recipe_calories,time,user_id))
         user_conn.commit()
+        user_conn.close()
 
     def search_meal(self, search_query):
         # Connect to the SQLite database and fetch meal data with search function
@@ -174,13 +174,22 @@ class MealConnector:
         else:
             return []
 
-    def add_meal_favorites(self,recipe_name,user_id):
-        # Connect to the SQLite database and input meal info eaten
-        user_conn = sqlite3.connect(self.db_name)
-        user_cursor = user_conn.cursor()
+    def add_meal_favorites(self, recipe_name, user_id):
+        # Connect to the SQLite database and add meal favorites
+        with sqlite3.connect(self.db_name) as user_conn:
+            user_cursor = user_conn.cursor()
 
-        user_cursor.execute("SELECT id FROM recipes WHERE RecipeName LIKE ?", (recipe_name,))
-        result = user_cursor.fetchone()
-        if result:
-            user_cursor.execute("INSERT INTO Favorite_meals (User_id,FoodName,food_id) VALUES (?,?,?)", (user_id,recipe_name,result[0]))
-            user_conn.commit()
+            # Get the recipe ID for the given recipe_name
+            user_cursor.execute("SELECT id FROM recipes WHERE RecipeName LIKE ?", (recipe_name,))
+            result = user_cursor.fetchone()
+
+            if result:
+                # Check if the user has already favorited this recipe
+                user_cursor.execute("SELECT COUNT(*) FROM Favorite_Meals WHERE User_id = ? AND FoodName = ?", (user_id, recipe_name))
+                existing_count = user_cursor.fetchone()[0]
+
+                if existing_count == 0:
+                    # If not already favorited, insert into the Favorite_Meals table
+                    user_cursor.execute("INSERT INTO Favorite_Meals (User_id, FoodName, food_id) VALUES (?,?,?)", (user_id, recipe_name, result[0]))
+                    user_conn.commit()
+                    

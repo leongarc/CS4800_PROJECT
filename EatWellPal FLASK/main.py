@@ -174,14 +174,12 @@ def main():
         tracker = recomendedMeal.MealConnector("database.db")
 
         # Process meal data, initialize TF-IDF, and get recommendations
-        tracker.process_meal_data()
+        tracker.process_meal_data(current_user.id)
 
         # Render results template
         return render_template('main.html',
                                 username=log_user,
-                                user_input=tracker.get_ingredients(),
-                                group_input=tracker.get_ingredients_group(),
-                                recommendations_user=tracker.get_recommendations(tracker.get_ingredients(), None),
+                                recommendations_user=tracker.get_recommendations(tracker.get_ingredients(current_user.id), None),
                                 recommendations_group=tracker.get_recommendations(tracker.get_ingredients_group(), None),
                                 new_meals=tracker.new_meals())
     else:

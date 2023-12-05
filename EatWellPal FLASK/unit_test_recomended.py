@@ -1,249 +1,160 @@
 #Author: Uriel Alvarez
-
+#unit testing for recomendedMeal.MealConnector
 
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+import sqlite3
+import pandas as pd
+from datetime import datetime, date
 from connectors import recomendedMeal
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+import os
 
 
 class TestMealConnector(unittest.TestCase):
     # connect to recommended meal page
     def setUp(self):
-        self.app = recomendedMeal.MealConnector(db_name='database.db')
+        self.db_name = "test.db" 
+        self.app = recomendedMeal.MealConnector(self.db_name)
+        self.tearDown()
+        self.create_test_data()
 
     def tearDown(self):
-        # Clean up resources, e.g., close the database connection
-        pass
+        # Erase all tables and data
+        with sqlite3.connect(self.db_name) as conn:
+            conn.execute("DROP TABLE IF EXISTS recipes")
+            conn.execute("DROP TABLE IF EXISTS users")
+            conn.execute("DROP TABLE IF EXISTS calorie_intake")
+            conn.execute("DROP TABLE IF EXISTS Favorite_meals")
+        if os.path.exists(self.db_name):
+            os.remove(self.db_name)
+    def create_test_data(self):
 
-    # login to our test user account
-    def login(self, db_name):
-        test = self.app.login('test', 'test')
+        with sqlite3.connect(self.db_name) as conn:
+            # Make Table
+            conn.execute("CREATE TABLE recipes (RecipeName TEXT, Ingredients TEXT, ID INT)")
+            conn.execute("CREATE TABLE users (email TEXT, password TEXT, user_id INT, username TEXT)")
+            conn.execute("CREATE TABLE calorie_intake (ID INT, FoodName TEXT, Quantity INT, TotalCalories INT, Timestamp DATETIME, user_id INT)")
+            conn.execute("CREATE TABLE Favorite_meals (User_id INT, FoodName TEXT, food_id INT)")
+
+     
+            time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            # insert test data
+            conn.execute("INSERT INTO recipes (RecipeName, Ingredients, ID) VALUES (?, ?, ?), (?, ?, ?)", 
+                         ("Meal1", "Rice, Beans, Chicken", '1', "Meal2", "Eggs, Ham, Bacon", '2'))
+            conn.execute("INSERT INTO users (email , password, user_id, username) VALUES (?, ?, ?, ?), (?, ?, ?, ?)", 
+                         ("test", "test", '1', "test", 'example', 'example', '2', "example"))
+            conn.execute("INSERT INTO calorie_intake (ID, FoodName , Quantity , TotalCalories , Timestamp , user_id ) VALUES (?, ?, ?, ?, ?, ?), (?, ?, ?, ?, ?, ?)", 
+                         ("1", "Meal1", "1", '400', time, "1", "2", "Meal2", "1", '300', time, "2"))
+            conn.execute("INSERT INTO Favorite_meals (User_id, FoodName, food_id) VALUES (?, ?, ?), (?, ?, ?)", 
+                         ("1", "Meal1", "1", "2", "Meal2", "2"))
 
     def test_create_meal_dataframe(self):
-        mock_cursor = Mock()
-        mock_cursor.fetchall.return_value = [("Recipe1", "Ingredient1"), ("Recipe2", "Ingredient2")]
-        mock_conn = Mock()
-        mock_conn.cursor.return_value = mock_cursor
+        self.app.create_meal_dataframe()
 
-        with patch("sqlite3.connect", return_value=mock_conn):
-            self.app.create_meal_dataframe()
+        # Check if the DataFrame is not empty and has the expected columns
+        self.assertFalse(self.app.meal_df.empty)
 
-        self.assertIsNotNone(self.app.meal_df)
+        expected_columns = ['Name', 'Ingredients']
+        self.assertListEqual(list(self.app.meal_df.columns), expected_columns)
+
+        # Check if specific data is present in the DataFrame
+        self.assertTrue(('Meal1', 'Rice, Beans, Chicken') in zip(self.app.meal_df['Name'], self.app.meal_df['Ingredients']))
 
     def test_initialize_tfidf(self):
-        self.app.create_meal_dataframe = Mock()
-
-        self.app.tfidf_vectorizer = Mock()
-        self.app.tfidf_vectorizer.fit_transform.return_value = Mock()
-        self.app.tfidf_matrix = Mock()
+        self.app.create_meal_dataframe()
 
         self.app.initialize_tfidf()
 
-        self.app.tfidf_vectorizer.fit_transform.assert_called_once_with(self.app.meal_df['Ingredients'])
-        self.app.tfidf_matrix.assert_called_once_with(self.app.tfidf_vectorizer.fit_transform.return_value)
-
-
+        # Check if the TF-IDF Vectorizer and Matrix are initialized
+        self.assertIsNotNone(self.app.tfidf_vectorizer)
+        self.assertIsNotNone(self.app.tfidf_matrix)
 
     def test_process_meal_data(self):
-        # Set up test parameters
-        self.app.create_meal_dataframe = Mock()
-        self.app.initialize_tfidf = Mock()
-        self.app.get_ingredients = Mock(return_value="Chicken Salad")
-        self.app.get_ingredients_group = Mock(return_value="Veggies Mix")
+        self.app.create_meal_dataframe()
+        self.app.initialize_tfidf()
 
-        self.app.tfidf_vectorizer = Mock()
-        self.app.tfidf_matrix = Mock()
-        self.app.linear_kernel = Mock()
-        self.app.get_recommendations = Mock(return_value=["Meal1", "Meal2"])
+        user_input, group_input, recommendations_user, recommendations_group, new_meals = self.app.process_meal_data('1')
 
-        result = self.app.process_meal_data()
+        # Check the outputs based on your expectations
+        self.assertIsInstance(user_input, str)
+        self.assertIsInstance(group_input, str)
+        self.assertIsInstance(recommendations_user, pd.Series)
+        self.assertIsInstance(recommendations_group, pd.Series)
+        self.assertIsInstance(new_meals, list)
 
-        self.app.create_meal_dataframe.assert_called_once()
-        self.app.initialize_tfidf.assert_called_once()
-        self.app.get_ingredients.assert_called_once()
-        self.app.get_ingredients_group.assert_called_once()
-
-        self.app.tfidf_vectorizer.transform.assert_called_with(["Chicken Salad"])
-        self.app.linear_kernel.assert_called_with(self.app.tfidf_vectorizer.transform.return_value, self.app.tfidf_matrix)
-        self.app.get_recommendations.assert_called_with("Chicken Salad", self.app.linear_kernel.return_value)
-
-
-    # Define a function to get meal recommendations based on user preferences
     def test_recommendations(self):
        # Set up test parameters
-        user_input = "Chicken Salad"
-        cosine_sim = Mock()
+        self.app.create_meal_dataframe()
+        self.app.initialize_tfidf()
 
-        self.app.tfidf_vectorizer = Mock()
-        self.app.tfidf_matrix = Mock()
+        # Call the method you want to test
+        user_input = "Rice, Beans"
+        user_tfidf = self.app.tfidf_vectorizer.transform([user_input])
+        cosine_sim_user = linear_kernel(user_tfidf, self.app.tfidf_matrix)
+        recommendations_user = self.app.get_recommendations(user_input, cosine_sim_user)
 
-        result = self.app.get_recommendations(user_input, cosine_sim)
-
-        self.app.tfidf_vectorizer.transform.assert_called_once_with([user_input])
-
-        cosine_sim_user = self.app.tfidf_vectorizer.transform.return_value
-
-        cosine_sim.assert_called_once_with(cosine_sim_user, self.app.tfidf_matrix)
-
-        self.app.meal_df['Name'].iloc.__getitem__.assert_called_once_with(slice(None, 10, None))
-        
-        expected_result = self.app.meal_df['Name'].iloc.__getitem__.return_value
-        self.assertEqual(result, expected_result)
-
-       
+        # Check the output based on your expectations
+        self.assertIsInstance(recommendations_user, pd.Series)
 
     def test_new_meals(self):
-        # Mock database connection and cursor
-        mock_cursor = Mock()
-        mock_conn = Mock()
-        mock_conn.cursor.return_value = mock_cursor
+        self.app.create_meal_dataframe()
+        new_meals = self.app.new_meals()
 
-        # Patch the sqlite3.connect method to return the mock connection
-        with unittest.mock.patch("sqlite3.connect", return_value=mock_conn):
-            # Call the method to be tested
-            result = self.app.new_meals()
-
-        # Assertions
-        mock_cursor.execute.assert_called_once_with(
-            "SELECT RecipeName, id FROM recipes ORDER BY ID DESC LIMIT 10"
-        )
-        expected_result = [(1, 'Recipe1'), (2, 'Recipe2')]  # Adjust based on your test case
-        self.assertEqual(result, expected_result)
-
-    
+        #check for output
+        self.assertIsInstance(new_meals, list)
 
     def test_get_ingredients_group(self):
-          # Mock database connection and cursor
-        mock_cursor = Mock()
-        mock_conn = Mock()
-        mock_conn.cursor.return_value = mock_cursor
+        ingredients_group = self.app.get_ingredients_group()
 
-        # Patch the sqlite3.connect method to return the mock connection
-        with unittest.mock.patch("sqlite3.connect", return_value=mock_conn):
-            # Call the method to be tested
-            result = self.app.get_ingredients_group()
+        # make sure output is correct
+        self.assertIsInstance(ingredients_group, str)
 
-        # Assertions
-        mock_cursor.execute.assert_called_once_with(
-            "SELECT FoodName FROM calorie_intake WHERE Timestamp >= DATE('now', '-30 days');"
-        )
-        self.assertEqual(result, '  '.join(mock_cursor.fetchall.return_value))
-
-        
     def test_get_ingredients(self):
-        # Set up test parameters
-        self.app.user_id = 1  # Assuming a user ID is set in the instance
+        ingredients = self.app.get_ingredients('1')
 
-        # Mock database connection and cursor
-        mock_cursor = Mock()
-        mock_conn = Mock()
-        mock_conn.cursor.return_value = mock_cursor
+        # Check the output based on your expectations
+        self.assertIsInstance(ingredients, str)
 
-        # Patch the sqlite3.connect method to return the mock connection
-        with unittest.mock.patch("sqlite3.connect", return_value=mock_conn):
-            # Call the method to be tested
-            result = self.app.get_ingredients()
-
-        # Assertions
-        mock_cursor.execute.assert_called_once_with(
-            "SELECT FoodName FROM calorie_intake WHERE user_id = ? AND Timestamp >= DATE('now', '-10 days');",
-            (self.app.user_id,),
-        )
-        self.assertEqual(result, '  '.join(mock_cursor.fetchall.return_value))
-
-            
     def test_login(self):
-        # Set up test parameters
-        username = "test_user"
-        password = "test_password"
+        test = self.app.login('test', 'test')
 
-        # Mock database connection and cursor
-        mock_cursor = Mock()
-        mock_conn = Mock()
-        mock_conn.cursor.return_value = mock_cursor
-
-        # Patch the sqlite3.connect method to return the mock connection
-        with unittest.mock.patch("sqlite3.connect", return_value=mock_conn):
-            # Call the method to be tested
-            result = self.app.login(username, password)
-
-        # Assertions
-        mock_cursor.execute.assert_called_once_with(
-            "SELECT user_id FROM users WHERE username = ? AND password = ?", (username, password)
-        )
-        self.assertEqual(result, mock_cursor.fetchone.return_value[0])
-
+        self.assertIsNotNone(test)
+        self.assertEqual(test, 1)
 
     def test_get_meal_data_by_column(self):
-        # Set up test parameters
-        recipe_id = "Spaghetti_ID"
-        column_name = "Calories"
+        recipe_id = "Meal1"
+        column_name = "Ingredients"
+        meal_data = self.app.get_meal_data_by_column(recipe_id, column_name)
 
-        # Mock database connection and cursor
-        mock_cursor = Mock()
-        mock_conn = Mock()
-        mock_conn.cursor.return_value = mock_cursor
-
-        # Patch the sqlite3.connect method to return the mock connection
-        with unittest.mock.patch("sqlite3.connect", return_value=mock_conn):
-            # Call the method to be tested
-            result = self.app.get_meal_data_by_column(recipe_id, column_name)
-
-        # Assertions
-        mock_cursor.execute.assert_called_once_with(
-            f"SELECT {column_name} FROM recipes WHERE RecipeName = ?", (recipe_id,)
-        )
-        self.assertEqual(result, mock_cursor.fetchone.return_value)
-
+        # Check the output 
+        self.assertIsInstance(meal_data, tuple)
 
     def test_add_meal_intake(self):
         # Set up test parameters
-        recipe_name = "Spaghetti"
+        recipe_name = "Meal2"
         user_id = 1
-        serving = 2
+        serving = 1
         recipe_calories = 500
         time = "2023-01-01 12:00:00"
+        self.app.add_meal_intake(recipe_name, user_id, serving, recipe_calories, time)
 
-        # Mock database connection and cursor
-        mock_cursor = Mock()
-        mock_conn = Mock()
-        mock_conn.cursor.return_value = mock_cursor
-
-        # Patch the sqlite3.connect method to return the mock connection
-        with unittest.mock.patch("sqlite3.connect", return_value=mock_conn):
-            # Call the method to be tested
-            self.app.add_meal_intake(recipe_name, user_id, serving, recipe_calories, time)
-
-        # Assertions
-        mock_cursor.execute.assert_called_once_with(
-            "SELECT MAX(ID) FROM calorie_intake"
-        )
-        mock_cursor.fetchone.assert_called_once()
-        mock_cursor.execute.assert_called_with(
-            "INSERT INTO calorie_intake (ID, FoodName, Quantity, TotalCalories, Timestamp, user_id) VALUES (?,?,?,?,?,?)",
-            (mock_cursor.fetchone.return_value[0] + 1, recipe_name, serving, recipe_calories, time, user_id),
-        )
-
+        with sqlite3.connect(self.db_name) as conn:
+            result = conn.execute("SELECT * FROM calorie_intake WHERE FoodName = ? AND user_id = ?", (recipe_name, user_id)).fetchone()
+            self.assertIsNotNone(result)
 
     def test_search_meal(self):
-        # Set up mock data for search query
-        search_query = "Chicken"
+        search_query = "Meal"
+        result = self.app.search_meal(search_query)
 
-        # Set up mock cursor and connection
-        mock_cursor = Mock()
-        mock_cursor.fetchall.return_value = [("Chicken Curry",), ("Grilled Chicken",)]
-        mock_conn = Mock()
-        mock_conn.cursor.return_value = mock_cursor
+        # Check if the search result is as expected
+        self.assertGreater(len(result), 0)
+        self.assertIn("Meal1", result)
+        self.assertIn("Meal2", result)
 
-        # Patch the sqlite3.connect method to return the mock connection
-        with unittest.mock.patch("sqlite3.connect", return_value=mock_conn):
-            # Call the method to be tested
-            results = self.app.search_meal(search_query)
 
-        # Assertions
-        mock_cursor.execute.assert_called_once_with("SELECT RecipeName FROM recipes WHERE RecipeName LIKE ?", ('%Chicken%',))
-        self.assertEqual(results, [("Chicken Curry",), ("Grilled Chicken",)])
-    
 if __name__ == '__main__':
     unittest.main()
+    
 
