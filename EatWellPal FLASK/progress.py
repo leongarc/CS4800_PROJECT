@@ -1,5 +1,9 @@
 import sqlite3
 from flask import Flask, render_template
+import sqlite3
+import json
+import os
+db_path = os.path.join(os.getcwd() + '/databases/users.db')
 
 #Author Jack W.
 
