@@ -28,13 +28,15 @@ class FavoritesDBConnector:
     # Returns None if no favorites data exists
     def get_favorites(self):
         self.cur.execute("SELECT FoodName,\
-                         food_id\
-                        FROM Favorite_Meals\
-                        WHERE user_id = ?", (str(self.user_id)))
-        result = self.cur.fetchone()
-        if result[0] is not None: 
+                          food_id\
+                          FROM Favorite_Meals\
+                          WHERE User_id = ?", (str(self.user_id)))
+        result = self.cur.fetchall()
+        if result is not None:
+            self.close_connection()
             return result
         else:
+            self.close_connection()
             return None
         
     # Keeping it for reference
@@ -61,6 +63,7 @@ class FavoritesDBConnector:
                 
                 c_f += str(position)
         self.conn.commit()
+        self.close_connection()
 
     # Using this one
     # Alternate version of update_favorites() function
@@ -71,13 +74,15 @@ class FavoritesDBConnector:
                          food_id)\
                          VALUES (?,?,?)", (self.user_id, food_name, food_id))
         self.conn.commit()
+        self.close_connection()
 
     # Delete favorite meal from user's list
     def delete_favorites(self, food_id):
         self.cur.execute("DELETE FROM Favorite_Meals\
-            WHERE user_id = ? AND food_id = ?", (str(self.user_id), food_id))
+            WHERE User_id = ? AND food_id = ?", (str(self.user_id), food_id))
         
         self.conn.commit()
+        self.close_connection()
 
     # Used to close the connectioin to the database when no longer needed
     def close_connection(self):
