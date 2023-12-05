@@ -26,11 +26,16 @@
         <p>{{ recipe_Description[0] }}</p>
         
         <h2>Ingredients:</h2>
+            {% if recipe_Ingredients %}
         <ul>
             {% for ingredient in recipe_Ingredients[0].split('\n') %}
                 <li>{{ ingredient }}</li>
             {% endfor %}
         </ul>
+        {% else %}
+            <p>No ingredients available.</p>
+        {% endif %}
+
         
         <h2>Instructions:</h2>
         <p>{{ recipe_Instructions[0] }}</p>

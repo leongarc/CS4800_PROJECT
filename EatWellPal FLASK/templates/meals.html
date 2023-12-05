@@ -25,44 +25,20 @@
             <input type="text" id="searchQuery" name="searchQuery" required>
             <button type="submit" onclick="search()">Search</button>
         </form>
-
-        <div id="resultsContainer"></div>
-
+        
+        {% if search_results %}
+        <h2>Search Results</h2>
+        <ul>
+            {% for result in search_results %}
+                <li>
+                    <a href="{{ url_for('meals_data', recommendation_id=result) }}">
+                        {{ result }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
 </body>
-<script>
-$(document).ready(function () {
-    // Intercept form submission
-    $('#searchForm').submit(function (e) {
-        e.preventDefault(); 
-        search(); 
-    });
-
-function search() {
-    console.log('Button clicked!');
-    var searchQuery = $('#searchQuery').val();
-
-    $.ajax({
-        type: 'POST',
-        url: '/meals' 
-        data: {searchQuery: searchQuery}
-
-        success: function(data) {
-            console.log('Data received:', data);
-            var resultsHtml = '<ul>';
-                data.forEach(function (item) {
-                    resultsHtml += '<li>' + item.RecipeName + '</li>';
-                });
-                resultsHtml += '</ul>';
-
-                $('#resultsContainer').html(resultsHtml);
-            },
-
-        error: function(error) {
-            console.error('There was a problem with the fetch operation:', error);
-            // Handle error if needed
-        }
-    });
-}
-});
-</script>
 </html>

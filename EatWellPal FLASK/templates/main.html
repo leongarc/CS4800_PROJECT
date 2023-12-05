@@ -25,7 +25,7 @@
         </b>
     </h1>
 
-    <h2>Top Picks for {{username}}:</h2>
+    <h2>Top Picks for You:</h2>
     <ul>
         {% for recommendation in recommendations_user %}
             <li>
@@ -46,20 +46,19 @@
             </li>
         {% endfor %}
         </ul>
-
     <h2>Recently Added:</h2>
-    {% if not new_meals.empty %}
-        <ul>
-            {% for index, row in new_meals.iterrows() %}
-                <li>
-                    <a href="{{ url_for('meals', recommendation_id=row['id']) }}">
-                        {{ row['RecipeName'] }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No new meals available.</p>
-    {% endif %}
+    {% if new_meals %}
+    <ul>
+        {% for recipe_name in new_meals %}
+            <li>
+                <a href="{{ url_for('meals_data', recommendation_id=recipe_name) }}">
+                    {{ recipe_name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No new meals available.</p>
+{% endif %}
 </body>
 </html>

@@ -70,19 +70,19 @@ class MealConnector:
 
     def new_meals(self):
         # Connect to the SQLite database and fetch new meal data
-        conn = sqlite3.connect(self.db_name)
-        cursor = conn.cursor()
-        cursor.execute('SELECT RecipeName, id FROM recipes ORDER BY ID DESC LIMIT 10')
-        data = cursor.fetchall()
-        conn.close()
+        meal_conn = sqlite3.connect(self.db_name)
+        meal_cursor = meal_conn.cursor()
+        meal_cursor.execute('SELECT RecipeName FROM recipes ORDER BY ID DESC LIMIT 10')
+        data = meal_cursor.fetchall()
+        meal_conn.close()
 
         new_meal = []
 
         if data:
-            new_meal = [(id, recipe_name) for recipe_name, id in data if recipe_name and id]
-            return pd.DataFrame(new_meal)
+            new_meal = [(recipe_name[0]) for recipe_name in data if recipe_name]
+            return new_meal
         else:
-            return pd.DataFrame()
+            return []
     
 
     def get_ingredients_group(self):
@@ -163,10 +163,16 @@ class MealConnector:
         meal_cursor = meal_conn.cursor()
 
         meal_cursor.execute("SELECT RecipeName FROM recipes WHERE RecipeName LIKE ?", ('%' + (search_query or '') + '%',))
-        search_results = meal_cursor.fetchall()
+        data = meal_cursor.fetchall()
         meal_conn.close()
 
-        return search_results
+        new_meal = []
+
+        if data:
+            new_meal = [(recipe_name[0]) for recipe_name in data if recipe_name]
+            return new_meal
+        else:
+            return []
 
     def add_meal_favorites(self,recipe_name,user_id):
         # Connect to the SQLite database and input meal info eaten

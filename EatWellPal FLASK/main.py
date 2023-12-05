@@ -220,11 +220,11 @@ def favorites():
 @login_required
 def meals():
     if request.method == 'POST':
-        search_query = request.get_json().get('searchQuery', '')
+        search_query = request.form['searchQuery']
 
         tracker = recomendedMeal.MealConnector("database.db")
-        results=tracker.search_meal(search_query)
-        return jsonify(results)
+        search_results=tracker.search_meal(search_query)
+        return render_template('meals.html', search_results= search_results)
 
     return render_template('meals.html')
 
