@@ -17,7 +17,7 @@ def calorie_progress(user_id):
     user_interface = UserInterface(user_id)
 
     # Get and display calorie data
-    conn = sqlite3.connect("calorie_intake.db")
+    conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
     cursor.execute("SELECT consumed_calories, daily_calorie_goal FROM calorie_data WHERE user_id=?", (user_id,))
