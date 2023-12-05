@@ -3,7 +3,7 @@ from flask import Flask, render_template
 import sqlite3
 import json
 import os
-db_path = os.path.join(os.getcwd() + '/databases/users.db')
+db_path = os.path.join(os.getcwd() + '/databases/database.db')
 
 #Author Jack W.
 class ProgressDBConnector:
