@@ -5,8 +5,8 @@
 
 import sqlite3
 import json
-# import os
-# db_path = os.path.join(os.getcwd() + '/databases/users.db')
+import os
+db_path = os.path.join(os.getcwd() + '/databases/users.db')
 
 class FavoritesDBConnector:
 
@@ -32,13 +32,52 @@ class FavoritesDBConnector:
                           FROM Favorite_Meals\
                           WHERE User_id = ?", (str(self.user_id)))
         result = self.cur.fetchall()
-        if result is not None:
-            self.close_connection()
+        
+        if result:
             return result
         else:
-            self.close_connection()
             return None
+
+    # Using this one
+    # Alternate version of update_favorites() function
+    def insert_favorites(self, food_name, food_id):
+        exist = self.favorite_exists(food_id)
+        # Returns True if entry exists
+        if exist:
+            return exist
+        else:
+            self.cur.execute("INSERT INTO Favorite_Meals\
+                            (User_id,\
+                            FoodName,\
+                            food_id)\
+                            VALUES (?,?,?)", (self.user_id, food_name, food_id))
+            self.conn.commit()
+
+    # Delete favorite meal from user's list
+    def delete_favorites(self, food_id):
+        self.cur.execute("DELETE FROM Favorite_Meals\
+            WHERE User_id = ? AND food_id = ?", (str(self.user_id), food_id))
         
+        self.conn.commit()
+    
+    # Checks to see if entry exists
+    def favorite_exists(self, food_id):
+        self.cur.execute("SELECT User_id\
+                          FROM Favorite_Meals\
+                          WHERE User_id = ? AND food_id = ?", (str(self.user_id), food_id))
+        result = self.cur.fetchone()
+
+        if result:
+            return True
+        else:
+            return False
+
+    # Used to close the connectioin to the database when no longer needed
+    def close_connection(self):
+        self.conn.close()
+
+
+    
     # Keeping it for reference
     # This is original update function, may or may not use
     # Was trying to find a way to successfully add the favorites list in a JSON format
@@ -63,27 +102,3 @@ class FavoritesDBConnector:
                 
                 c_f += str(position)
         self.conn.commit()
-        self.close_connection()
-
-    # Using this one
-    # Alternate version of update_favorites() function
-    def insert_favorites(self, food_name, food_id):
-        self.cur.execute("INSERT INTO Favorite_Meals\
-                         (User_id,\
-                         FoodName,\
-                         food_id)\
-                         VALUES (?,?,?)", (self.user_id, food_name, food_id))
-        self.conn.commit()
-        self.close_connection()
-
-    # Delete favorite meal from user's list
-    def delete_favorites(self, food_id):
-        self.cur.execute("DELETE FROM Favorite_Meals\
-            WHERE User_id = ? AND food_id = ?", (str(self.user_id), food_id))
-        
-        self.conn.commit()
-        self.close_connection()
-
-    # Used to close the connectioin to the database when no longer needed
-    def close_connection(self):
-        self.conn.close()
