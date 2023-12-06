@@ -269,7 +269,6 @@ def process_add_ingredient():
 
         tracker.add_ingredient(user_id, ingredient_name, quantity)
         
-        return "Intake update successful"
     return "Invalid Request", 400
 
 

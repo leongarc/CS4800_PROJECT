@@ -26,6 +26,7 @@ class TestMealConnector(unittest.TestCase):
             conn.execute("DROP TABLE IF EXISTS users")
             conn.execute("DROP TABLE IF EXISTS calorie_intake")
             conn.execute("DROP TABLE IF EXISTS Favorite_meals")
+            conn.execute("DROP TABLE IF EXISTS  Calories")
         if os.path.exists(self.db_name):
             os.remove(self.db_name)
     def create_test_data(self):
@@ -36,7 +37,8 @@ class TestMealConnector(unittest.TestCase):
             conn.execute("CREATE TABLE users (email TEXT, password TEXT, user_id INT, username TEXT)")
             conn.execute("CREATE TABLE calorie_intake (ID INT, FoodName TEXT, Quantity INT, TotalCalories INT, Timestamp DATETIME, user_id INT)")
             conn.execute("CREATE TABLE Favorite_meals (User_id INT, FoodName TEXT, food_id INT)")
-
+            conn.execute("CREATE TABLE Calories (calories REAL, name TEXT);")
+            
      
             time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -49,6 +51,7 @@ class TestMealConnector(unittest.TestCase):
                          ("1", "Meal1", "1", '400', time, "1", "2", "Meal2", "1", '300', time, "2"))
             conn.execute("INSERT INTO Favorite_meals (User_id, FoodName, food_id) VALUES (?, ?, ?), (?, ?, ?)", 
                          ("1", "Meal1", "1", "2", "Meal2", "2"))
+            conn.execute("INSERT INTO CALORIES (calories, name) VALUES (100, 'Test Ingredient');")
 
     def test_create_meal_dataframe(self):
         self.app.create_meal_dataframe()
@@ -152,6 +155,45 @@ class TestMealConnector(unittest.TestCase):
         self.assertGreater(len(result), 0)
         self.assertIn("Meal1", result)
         self.assertIn("Meal2", result)
+
+
+    def test_add_meal_favorites(self):
+        with sqlite3.connect(self.db_name) as conn:
+            cursor = conn.cursor()
+
+            # add test data to recipe
+            self.app.add_meal_favorites("Meal1", user_id=1)
+
+            # Verify 
+            cursor.execute("SELECT COUNT(*) FROM Favorite_Meals WHERE User_id = 1 AND FoodName = 'Meal1';")
+            result = cursor.fetchone()[0]
+            self.assertEqual(result, 1)
+
+
+    def test_dailyintake(self):
+        with sqlite3.connect(self.db_name) as conn:
+            cursor = conn.cursor()
+
+            # Add test data
+            cursor.execute("INSERT INTO calorie_intake (FoodName, user_id, Timestamp) VALUES ('Meal1', 1, ?);", (datetime.now(),))
+
+
+            result = self.app.dailyintake(user_id=1)
+
+            # Verify
+            self.assertIn('Meal1', result)
+
+
+    def test_add_ingredient(self):
+        with sqlite3.connect(self.db_name) as conn:
+            cursor = conn.cursor()
+
+            self.app.add_ingredient(user_id='1', ingredient_name='Test Ingredient', quantity=150)
+
+            # Verify
+            cursor.execute("SELECT COUNT(*) FROM calorie_intake WHERE FoodName = 'Test Ingredient';")
+            result = cursor.fetchone()[0]
+            self.assertEqual(result, 1)
 
 
 if __name__ == '__main__':
