@@ -2,7 +2,7 @@
 
 import sqlite3
 import pandas as pd
-from datetime import datetime, date
+from datetime import datetime
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
@@ -192,4 +192,21 @@ class MealConnector:
                     # If not already favorited, insert into the Favorite_Meals table
                     user_cursor.execute("INSERT INTO Favorite_Meals (User_id, FoodName, food_id) VALUES (?,?,?)", (user_id, recipe_name, result[0]))
                     user_conn.commit()
-                    
+
+    def dailyintake(self, user_id):
+        today = datetime.now().strftime("%Y-%m-%d")
+        start_timestamp = f"{today} 00:00:00"
+        end_timestamp = f"{today} 23:59:59"
+
+        intake_conn = sqlite3.connect(self.db_name)
+        intake_cursor = intake_conn.cursor()
+        intake_cursor.execute("SELECT FoodName FROM calorie_intake WHERE user_id = ? AND Timestamp BETWEEN ? AND ?;", (user_id, start_timestamp, end_timestamp,))
+        results = intake_cursor.fetchall()
+        intake_conn.close()
+
+        if results:
+            food_name = [result[0] for result in results]
+            return food_name
+        else:
+            return []
+        

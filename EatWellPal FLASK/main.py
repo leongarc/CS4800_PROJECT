@@ -206,7 +206,11 @@ def meals_data(recommendation_id):
 @app.route('/progress')
 @login_required
 def progress():
-    return render_template('progress.html')
+    tracker = recomendedMeal.MealConnector("database.db")
+    user_id = current_user.id
+    return render_template('progress.html',                           
+                           intake=tracker.dailyintake(user_id)
+)
 
 @app.route('/favorites')
 @login_required

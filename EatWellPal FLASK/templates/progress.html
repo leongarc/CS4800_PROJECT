@@ -18,5 +18,14 @@
         </ul>
     </div>
     <p>This is the Progress Page</p>
+
+    <h2>Food Eaten</h2>
+    <ul>
+        {% for result in intake %}
+            <li>
+                    {{ result }}
+            </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
