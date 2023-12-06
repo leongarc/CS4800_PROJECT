@@ -1,5 +1,4 @@
 import sqlite3
-from flask import Flask, render_template
 import sqlite3
 from datetime import date
 
@@ -21,6 +20,7 @@ class ProgressDBConnector():
         cursor.execute("SELECT TotalCalories FROM calorie_intake WHERE user_id=? and Timestamp >=?", (str(user_id),today_date))
         todays_intake = cursor.fetchall()
 
+        print(todays_intake)
         #summing up totalcalories
         x = 0
         for meal in todays_intake:
@@ -30,7 +30,7 @@ class ProgressDBConnector():
         user_intake = cursor.fetchone()
         user_intake = user_intake[0]
         conn.close()
-        return x, user_intake if x else (0, 0)
+        return x, user_intake if x != 0 else (0, user_intake)
 
     def get_weight_data(self, user_id):
         conn = sqlite3.connect(self.db_name)
