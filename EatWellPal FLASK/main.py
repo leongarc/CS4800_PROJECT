@@ -271,7 +271,7 @@ if __name__ == '__main__':
 
 #Author: Jack W.
 
-@app.route('/progress')
+@app.route('/progress/<int:user_id>')
 @login_required
 def progress():
     tracker = recomendedMeal.MealConnector("database.db")
