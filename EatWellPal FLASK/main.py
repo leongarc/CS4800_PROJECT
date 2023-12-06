@@ -295,12 +295,12 @@ def calorie_progress(user_id):
 
     return render_template('calorie_progress.html', user_interface=user_interface, calorie_progress=calorie_progress)
 
-@app.route('/weight_progress/<int:user_id>')
+@app.route('/calorie_progress.html/<int:user_id>')
 def weight_progress(user_id):
     # Create a WeightProgressChart instance
     weight_chart = WeightProgressChart(user_id)
 
-    return render_template('weight_progress.html', weight_chart=weight_chart)
+    return render_template('calorie_progress', weight_chart=weight_chart)
 
 if __name__ == '__main__':
     app.run(debug=True)
