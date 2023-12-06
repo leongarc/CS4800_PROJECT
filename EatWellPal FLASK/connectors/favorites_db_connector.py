@@ -72,6 +72,17 @@ class FavoritesDBConnector:
         else:
             return False
 
+    def get_recipe(self, food_id):
+        num = json.loads(food_id)
+        print(str(num))
+        
+        self.cur.execute("SELECT RecipeName, Calories FROM recipes WHERE id = ?", (num,))
+        result = self.cur.fetchall()
+
+        if result:
+            return result
+        else:
+            return False
     # Used to close the connectioin to the database when no longer needed
     def close_connection(self):
         self.conn.close()

@@ -138,7 +138,7 @@ class MealConnector:
         result = meal_cursor.fetchone()
         if result:
             meal_conn.close()
-        
+        meal_conn.close()
         return result
 
     def add_meal_intake(self,recipe_name,user_id,serving,recipe_calories,time):

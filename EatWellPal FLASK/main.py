@@ -212,6 +212,7 @@ def meals_data(recommendation_id):
 def favorites():
     fav = favorites_db_connector.FavoritesDBConnector(current_user.id)
     fav_list = fav.get_favorites()
+    fav.close_connection()
     return render_template('favorites.html', fav_list=fav_list)
 
 # By Leo Garcia
@@ -219,7 +220,8 @@ def favorites():
 @login_required
 def delete_favorite():
     request.method == 'POST'
-
+    food_id = request.form['delete_button']
+    type(food_id)
     fav = favorites_db_connector.FavoritesDBConnector(current_user.id)
     fav.delete_favorites(request.form['delete_button'])
     return redirect(url_for('favorites'))
@@ -229,14 +231,16 @@ def delete_favorite():
 @login_required
 def add_intake_favorite():
     request.method == 'POST'
-    #food_id = request.form['add']
-    #db_conn = recomendedMeal.MealConnector("database.db")
-    #user_id = current_user.id
-   #time = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
-    #recipe_calories = db_conn.get_meal_data_by_column(food_id, "Calories")
-    #recipe_name = db_conn.get_meal_data_by_column(food_id, "RecipeName")
-    #db_conn.add_meal_intake(recipe_name,user_id,'1',recipe_calories,time)
+    db_conn = favorites_db_connector.FavoritesDBConnector("database.db")
+    user_id = current_user.id
+    time = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
+    recipe = db_conn.get_recipe(request.form['add'])
+    db_conn.close_connection()
+    print(recipe)
+    db_conn = recomendedMeal.MealConnector("database.db")
+    db_conn.add_meal_intake(recipe[0][0],user_id,'1',recipe[0][1],time)
     return redirect(url_for('favorites'))
+
 
 # made by uriel
 @app.route('/meals', methods=['GET', 'POST'])
