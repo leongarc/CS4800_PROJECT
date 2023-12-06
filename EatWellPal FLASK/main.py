@@ -3,9 +3,10 @@ import sqlite3
 from flask import Flask, jsonify, render_template, url_for, request, redirect, flash
 from connectors import user_db_connector as user
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
-from connectors import recomendedMeal, progress_connector
+from connectors import recomendedMeal, progress_connector, favorites_db_connector
 from datetime import datetime
 import plotly.express as px
+
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -205,10 +206,37 @@ def meals_data(recommendation_id):
 
 
 
-@app.route('/favorites')
+# By Leo Garcia
+@app.route('/favorites', methods=['GET', 'POST'])
 @login_required
 def favorites():
-    return render_template('favorites.html')
+    fav = favorites_db_connector.FavoritesDBConnector(current_user.id)
+    fav_list = fav.get_favorites()
+    return render_template('favorites.html', fav_list=fav_list)
+
+# By Leo Garcia
+@app.route('/fav_delete', methods=['GET','POST'])
+@login_required
+def delete_favorite():
+    request.method == 'POST'
+
+    fav = favorites_db_connector.FavoritesDBConnector(current_user.id)
+    fav.delete_favorites(request.form['delete_button'])
+    return redirect(url_for('favorites'))
+
+# By Leo Garcia
+@app.route('/fav_add', methods=['GET','POST'])
+@login_required
+def add_intake_favorite():
+    request.method == 'POST'
+    #food_id = request.form['add']
+    #db_conn = recomendedMeal.MealConnector("database.db")
+    #user_id = current_user.id
+   #time = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
+    #recipe_calories = db_conn.get_meal_data_by_column(food_id, "Calories")
+    #recipe_name = db_conn.get_meal_data_by_column(food_id, "RecipeName")
+    #db_conn.add_meal_intake(recipe_name,user_id,'1',recipe_calories,time)
+    return redirect(url_for('favorites'))
 
 # made by uriel
 @app.route('/meals', methods=['GET', 'POST'])
