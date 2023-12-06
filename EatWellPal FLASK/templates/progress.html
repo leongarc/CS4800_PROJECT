@@ -18,6 +18,17 @@
         </ul>
     </div>
     <p>This is the Progress Page</p>
+    
+    <h1>Add Ingredient</h1>
+    <form action="{{ url_for('process_add_ingredient') }}" method="post">
+        <label for="ingredient_name">Ingredient Name:</label>
+        <input type="text" name="ingredient_name" required>
+
+        <label for="quantity">Quantity (in grams):</label>
+        <input type="number" name="quantity" required>
+
+        <button type="submit">Add Ingredient</button>
+    </form>
 
     <h2>Food Eaten</h2>
     <ul>

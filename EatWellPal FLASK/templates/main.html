@@ -8,6 +8,26 @@
     <title>Home</title>
     <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <style>
+        .slide-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .slide {
+            flex: 0 0 auto;
+            width: 200px; 
+            margin-right: 30px; 
+            scroll-snap-align: start;
+        }
+
+        .slide img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <div class="menu">
@@ -26,39 +46,43 @@
     </h1>
 
     <h2>Top Picks for You:</h2>
-    <ul>
+    <div class="slide-container">
         {% for recommendation in recommendations_user %}
-            <li>
-                <a href = "{{ url_for('meals_data',recommendation_id = recommendation) }}">
-                {{ recommendation }}
+            <div class="slide">
+                <a href="{{ url_for('meals_data', recommendation_id=recommendation) }}">
+                    <img src="{{ url_for('static', filename='images/meal.jpg') }}" alt="image">
+                    <p>{{ recommendation }}</p>
                 </a>
-            </li>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 
     <h2>Trending Now:</h2>
-    <ul>
+    <div class="slide-container">
         {% for recommendation in recommendations_group %}
-            <li>
-                <a href = "{{ url_for('meals_data', recommendation_id = recommendation) }}">
-                {{ recommendation }}
+            <div class="slide">
+                <a href="{{ url_for('meals_data', recommendation_id=recommendation) }}">
+                    <img src="{{ url_for('static', filename='images/meal.jpg') }}" alt="image">
+                    <p>{{ recommendation }}</p>
                 </a>
-            </li>
+            </div>
         {% endfor %}
-        </ul>
+    </div>
+
     <h2>Recently Added:</h2>
     {% if new_meals %}
-    <ul>
-        {% for recipe_name in new_meals %}
-            <li>
-                <a href="{{ url_for('meals_data', recommendation_id=recipe_name) }}">
-                    {{ recipe_name }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No new meals available.</p>
-{% endif %}
+        <div class="slide-container">
+            {% for recipe_name in new_meals %}
+                <div class="slide">
+                    <a href="{{ url_for('meals_data', recommendation_id=recipe_name) }}">
+                        <img src="{{ url_for('static', filename='images/meal.jpg') }}" alt="image">
+                        <p>{{ recipe_name }}</p>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No new meals available.</p>
+    {% endif %}
 </body>
 </html>

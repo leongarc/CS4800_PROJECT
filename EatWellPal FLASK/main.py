@@ -232,6 +232,7 @@ def meals():
 
 # made by uriel
 @app.route('/add_to_intake/<string:recipe_Name>', methods=['GET', 'POST'])
+@login_required
 def add_to_intake(recipe_Name):
 
     if request.method == 'POST':
@@ -250,8 +251,8 @@ def add_to_intake(recipe_Name):
 
 # made by uriel
 @app.route('/add_to_favorites/<string:recipe_Name>', methods=['GET', 'POST'])
+@login_required
 def add_to_favorites(recipe_Name):
-
     if request.method == 'POST':
         data = request.get_json()
         user_id = current_user.id
@@ -262,7 +263,19 @@ def add_to_favorites(recipe_Name):
 
     return "Invalid Request", 400
 
+@app.route('/process_add_ingredient', methods=['POST'])
+@login_required
+def process_add_ingredient():
+    if request.method == 'POST':
+        ingredient_name = request.form['ingredient_name']
+        quantity = float(request.form['quantity'])
+        user_id = current_user.id
+        tracker = recomendedMeal.MealConnector("database.db")
 
+
+        tracker.add_ingredient(user_id, ingredient_name, quantity)
+
+        return redirect(url_for('progress'))
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -299,6 +312,8 @@ def progress():
     weight_chart = recomendedMeal.WeightProgressChart(user_id)
 
     return render_template('progress.html', intake=tracker.dailyintake(user_id), calorie_progress=calorie_progress, weight_chart=weight_chart)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

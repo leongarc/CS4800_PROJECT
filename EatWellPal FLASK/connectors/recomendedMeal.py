@@ -210,3 +210,29 @@ class MealConnector:
         else:
             return []
         
+
+    def add_ingredient(self, user_id, ingredient_name, quantity):
+        food_conn = sqlite3.connect(self.db_name)
+        food_cursor = food_conn.cursor()
+
+        # Retrieve calorie information from the food database
+        food_cursor.execute("SELECT calories, name FROM CALORIES WHERE lower(name) LIKE ? ", ('%' + ingredient_name.lower() + '%',))
+        result = food_cursor.fetchone()
+
+        if result:
+            calorie_per_100g = float(result[0])
+            food_name = result[1]
+            calorie = (calorie_per_100g / 100) * quantity
+
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            # Add the ingredient to the intake database
+            food_cursor.execute("INSERT INTO calorie_intake (FoodName, Quantity, TotalCalories, Timestamp, user_id) VALUES (?, ?, ?, ?, ?)",
+                                  (food_name, quantity, calorie, timestamp, user_id))
+            food_conn.commit()
+
+            print(f"Added {quantity}g of {food_name} ({calorie} calories) to your daily intake.")
+        else:
+            print(f"{ingredient_name} is not in the database. You can add custom ingredients.")
+
+        food_conn.close()
