@@ -287,8 +287,8 @@ def progress():
     user_info = user.get_calorie_data(current_user.id)
 
 
-    progress = (int(user_info[0])/ int(user_info[1]))*100 
-    print(progress)
+    #progress = (int(user_info[0])/ int(user_info[1]))*100 
+    #print(user_info)
     fig = px.bar(x=[int(user_info[0])], y=[current_user.id], orientation='h',
                  labels={'x': 'Progress (%)', 'y': 'User ID'},
                  title='Daily Caloric Intake Progress', 
