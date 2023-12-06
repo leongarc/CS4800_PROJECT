@@ -272,6 +272,7 @@ if __name__ == '__main__':
 #Author: Jack W.
 
 @app.route('/calorie_progress/<int:user_id>')
+@login_required
 def calorie_progress(user_id):
     # Create a UserInterface instance
     user_interface = UserInterface(user_id)
