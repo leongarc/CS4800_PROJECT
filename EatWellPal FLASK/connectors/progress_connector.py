@@ -3,65 +3,45 @@ from flask import Flask, render_template
 import sqlite3
 import json
 import os
-db_path = os.path.join(os.getcwd() + '/databases/users.db')
+db_path = os.path.join(os.getcwd() + '/databases/database.db')
 
 #Author Jack W.
+class ProgressDBConnector:
+    def __init__(self, db_name):
+        self.db_name = database.db
 
-app = Flask(__name__)
-
-# Class ProgressBar, Weight ProgressChart and UserInt
-
-class ProgressBar:
-    def __init__(self, current, total, length=50):
-        self.current = current
-        self.total = total
-        self.length = length
-
-    def display(self):
-        progress = int(self.length * self.current / self.total)
-        bar = "[" + "=" * progress + " " * (self.length - progress) + "]"
-        percent = f"{(self.current / self.total) * 100:.2f}%"
-        print(f"{bar} {percent} - {self.current}/{self.total}")
-
-class WeightProgressChart:
-    def __init__(self, user_id):
-        self.user_id = user_id
-
-    def plot(self):
-        conn = sqlite3.connect("database.db")
+    def get_calorie_data(self, user_id):
+        conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
 
-        cursor.execute("SELECT date, weight FROM weight_data WHERE user_id=?", (self.user_id,))
-        data = cursor.fetchall()
-
-        dates = [entry[0] for entry in data]
-        weights = [entry[1] for entry in data]
-
-        plt.plot(dates, weights, marker='o', linestyle='-', color='b')
-        plt.xlabel("Date")
-        plt.ylabel("Weight")
-        plt.title("Weight Progress Chart")
-        plt.xticks(rotation=45)
-        plt.grid(True)
-        plt.tight_layout()
-        plt.show()
-
-class UserInterface:
-    def __init__(self, user_id):
-        self.user_id = user_id
-
-    def display_calorie_progress(self):
-        conn = sqlite3.connect("database.db")
-        cursor = conn.cursor()
-
-        cursor.execute("SELECT consumed_calories, daily_calorie_goal FROM calorie_data WHERE user_id=?", (self.user_id,))
+        cursor.execute("SELECT consumed_calories, daily_calorie_goal FROM calorie_data WHERE user_id=?", (user_id,))
         data = cursor.fetchone()
+        conn.close()
 
-        if data:
-            consumed_calories, daily_calorie_goal = data
-            print(f"Consumed Calories: {consumed_calories} / Daily Goal: {daily_calorie_goal}")
-            print("Calorie Consumption Progress:")
-            progress_bar = ProgressBar(consumed_calories, daily_calorie_goal)
-            progress_bar.display()
-        else:
-            print("No calorie consumption data available")
+        return data if data else (0, 0)
+
+    def get_weight_data(self, user_id):
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT date, weight FROM weight_data WHERE user_id=?", (user_id,))
+        data = cursor.fetchall()
+        conn.close()
+
+        return data if data else []
+
+    def update_calorie_data(self, user_id, consumed_calories, daily_calorie_goal):
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+
+        cursor.execute("UPDATE calorie_data SET consumed_calories=?, daily_calorie_goal=? WHERE user_id=?", (consumed_calories, daily_calorie_goal, user_id))
+        conn.commit()
+        conn.close()
+
+    def insert_weight_data(self, user_id, date, weight):
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+
+        cursor.execute("INSERT INTO weight_data (user_id, date, weight) VALUES (?, ?, ?)", (user_id, date, weight))
+        conn.commit()
+        conn.close()
