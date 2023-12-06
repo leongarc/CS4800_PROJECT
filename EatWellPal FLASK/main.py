@@ -294,11 +294,9 @@ def process_add_ingredient():
         user_id = current_user.id
         tracker = recomendedMeal.MealConnector("database.db")
 
-
         tracker.add_ingredient(user_id, ingredient_name, quantity)
         return redirect(url_for('progress'))
-    
-    return "Invalid Request", 400
+
 
 
 
