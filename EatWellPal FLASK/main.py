@@ -271,13 +271,13 @@ if __name__ == '__main__':
 
 #Author: Jack W.
 
-@app.route('/calorie_progress/<int:user_id>')
+@app.route('/progress')
 @login_required
-def calorie_progress(user_id):
-    # Create a UserInterface instance
-    user_interface = UserInterface(user_id)
+def progress():
+    tracker = recomendedMeal.MealConnector("database.db")
+    user_id = current_user.id
 
-    # Get and display calorie data
+    # Retrieve calorie data
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
@@ -295,15 +295,10 @@ def calorie_progress(user_id):
 
     conn.close()
 
-    return render_template('calorie_progress.html', user_interface=user_interface, calorie_progress=calorie_progress)
+    # Retrieve weight chart data
+    weight_chart = recomendedMeal.WeightProgressChart(user_id)
 
-@app.route('/calorie_progress.html/<int:user_id>')
-def weight_progress(user_id):
-    # Create a WeightProgressChart instance
-    weight_chart = WeightProgressChart(user_id)
-
-    return render_template('calorie_progress', weight_chart=weight_chart)
+    return render_template('progress.html', intake=tracker.dailyintake(user_id), calorie_progress=calorie_progress, weight_chart=weight_chart)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
