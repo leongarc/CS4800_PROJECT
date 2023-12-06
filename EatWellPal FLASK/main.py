@@ -266,7 +266,6 @@ def process_add_ingredient():
         tracker = recomendedMeal.MealConnector("database.db")
 
 
-<<<<<<< HEAD
         tracker.add_ingredient(user_id, ingredient_name, quantity)
 
         return redirect(url_for('progress'))
@@ -276,8 +275,6 @@ if __name__ == '__main__':
 
 
 
-=======
->>>>>>> 0130abf2f7fb8637abdaf44e58dd2c255d8cfd02
 #Author: Jack W.
 
 @app.route('/progress')
