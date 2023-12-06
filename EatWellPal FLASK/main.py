@@ -256,6 +256,7 @@ def add_to_favorites(recipe_Name):
 
     return "Invalid Request", 400
 
+# made by uriel
 @app.route('/process_add_ingredient', methods=['POST'])
 @login_required
 def process_add_ingredient():
@@ -267,12 +268,9 @@ def process_add_ingredient():
 
 
         tracker.add_ingredient(user_id, ingredient_name, quantity)
-
-        return redirect(url_for('progress'))
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
+        
+        return "Intake update successful"
+    return "Invalid Request", 400
 
 
 #Author: Jack W.
