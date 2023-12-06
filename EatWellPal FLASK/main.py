@@ -270,9 +270,6 @@ if __name__ == '__main__':
 
 
 #Author: Jack W.
-@app.route('/')
-def index():
-    return "Welcome to the Progress Page!"
 
 @app.route('/calorie_progress/<int:user_id>')
 def calorie_progress(user_id):
