@@ -1,24 +1,36 @@
 import sqlite3
 from flask import Flask, render_template
 import sqlite3
-import json
-import os
-db_path = os.path.join(os.getcwd() + '/databases/database.db')
+from datetime import date
 
 #Author Jack W.
-class ProgressDBConnector:
-    def __init__(self, db_name):
-        self.db_name = database.db
+class ProgressDBConnector():
+    def __init__(self):
+        self.db_name = 'database.db'
+
 
     def get_calorie_data(self, user_id):
         conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
+        today = date.today()
+        today_date = today.strftime("%Y/%m/%d")
+        today_date = today_date.replace("/", "-")
 
-        cursor.execute("SELECT consumed_calories, daily_calorie_goal FROM calorie_data WHERE user_id=?", (user_id,))
-        data = cursor.fetchone()
+
+
+        cursor.execute("SELECT TotalCalories FROM calorie_intake WHERE user_id=? and Timestamp >=?", (str(user_id),today_date))
+        todays_intake = cursor.fetchall()
+
+        #summing up totalcalories
+        x = 0
+        for meal in todays_intake:
+            x += meal[0]
+
+        cursor.execute("SELECT calorie_intake FROM userinfo WHERE user_id=?", (str(user_id)))
+        user_intake = cursor.fetchone()
+        user_intake = user_intake[0]
         conn.close()
-
-        return data if data else (0, 0)
+        return x, user_intake if x else (0, 0)
 
     def get_weight_data(self, user_id):
         conn = sqlite3.connect(self.db_name)

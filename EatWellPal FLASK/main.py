@@ -1,10 +1,11 @@
 #Authors: Everyone
-
+import sqlite3
 from flask import Flask, jsonify, render_template, url_for, request, redirect, flash
 from connectors import user_db_connector as user
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user, UserMixin
-from connectors import recomendedMeal
+from connectors import recomendedMeal, progress_connector
 from datetime import datetime
+import plotly.express as px
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -203,14 +204,6 @@ def meals_data(recommendation_id):
                            )
 
 
-@app.route('/progress')
-@login_required
-def progress():
-    tracker = recomendedMeal.MealConnector("database.db")
-    user_id = current_user.id
-    return render_template('progress.html',                           
-                           intake=tracker.dailyintake(user_id)
-)
 
 @app.route('/favorites')
 @login_required
@@ -273,6 +266,7 @@ def process_add_ingredient():
         tracker = recomendedMeal.MealConnector("database.db")
 
 
+<<<<<<< HEAD
         tracker.add_ingredient(user_id, ingredient_name, quantity)
 
         return redirect(url_for('progress'))
@@ -282,36 +276,29 @@ if __name__ == '__main__':
 
 
 
+=======
+>>>>>>> 0130abf2f7fb8637abdaf44e58dd2c255d8cfd02
 #Author: Jack W.
 
-@app.route('/progress/<int:user_id>')
+@app.route('/progress')
 @login_required
 def progress():
-    tracker = recomendedMeal.MealConnector("database.db")
-    user_id = current_user.id
+    user = progress_connector.ProgressDBConnector()
+    user_info = user.get_calorie_data(current_user.id)
 
-    # Retrieve calorie data
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
 
-    cursor.execute("SELECT consumed_calories, daily_calorie_goal FROM calorie_data WHERE user_id=?", (user_id,))
-    data = cursor.fetchone()
+    progress = (int(user_info[0])/ int(user_info[1]))*100 
+    print(progress)
+    fig = px.bar(x=[int(user_info[0])], y=[current_user.id], orientation='h',
+                 labels={'x': 'Progress (%)', 'y': 'User ID'},
+                 title='Daily Caloric Intake Progress', 
+                 range_x=[0, user_info[1]])
 
-    if data:
-        consumed_calories, daily_calorie_goal = data
-        calorie_progress = {
-            "consumed_calories": consumed_calories,
-            "daily_calorie_goal": daily_calorie_goal
-        }
-    else:
-        calorie_progress = None
+    # Save the chart as HTML and embed it in the template
+    graph_html = fig.to_html(full_html=False)
 
-    conn.close()
+    return render_template('progress.html', graph_html=graph_html)
 
-    # Retrieve weight chart data
-    weight_chart = recomendedMeal.WeightProgressChart(user_id)
-
-    return render_template('progress.html', intake=tracker.dailyintake(user_id), calorie_progress=calorie_progress, weight_chart=weight_chart)
 
 
 
