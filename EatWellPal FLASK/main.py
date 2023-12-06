@@ -236,7 +236,7 @@ def add_intake_favorite():
     time = datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
     recipe = db_conn.get_recipe(request.form['add'])
     db_conn.close_connection()
-    print(recipe)
+ 
     db_conn = recomendedMeal.MealConnector("database.db")
     db_conn.add_meal_intake(recipe[0][0],user_id,'1',recipe[0][1],time)
     return redirect(url_for('favorites'))

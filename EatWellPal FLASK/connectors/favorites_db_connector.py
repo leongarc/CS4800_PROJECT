@@ -74,8 +74,6 @@ class FavoritesDBConnector:
 
     def get_recipe(self, food_id):
         num = json.loads(food_id)
-        print(str(num))
-        
         self.cur.execute("SELECT RecipeName, Calories FROM recipes WHERE id = ?", (num,))
         result = self.cur.fetchall()
 
