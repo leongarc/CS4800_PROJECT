@@ -192,6 +192,7 @@ class MealConnector:
                     # If not already favorited, insert into the Favorite_Meals table
                     user_cursor.execute("INSERT INTO Favorite_Meals (User_id, FoodName, food_id) VALUES (?,?,?)", (user_id, recipe_name, result[0]))
                     user_conn.commit()
+        user_conn.close()
 
     def dailyintake(self, user_id):
         today = datetime.now().strftime("%Y-%m-%d")
@@ -230,9 +231,5 @@ class MealConnector:
             food_cursor.execute("INSERT INTO calorie_intake (FoodName, Quantity, TotalCalories, Timestamp, user_id) VALUES (?, ?, ?, ?, ?)",
                                   (food_name, quantity, calorie, timestamp, user_id))
             food_conn.commit()
-
-            print(f"Added {quantity}g of {food_name} ({calorie} calories) to your daily intake.")
-        else:
-            print(f"{ingredient_name} is not in the database. You can add custom ingredients.")
 
         food_conn.close()

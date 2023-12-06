@@ -296,8 +296,10 @@ def process_add_ingredient():
 
 
         tracker.add_ingredient(user_id, ingredient_name, quantity)
-        
+        return redirect(url_for('progress'))
+    
     return "Invalid Request", 400
+
 
 
 #Author: Jack W.
