@@ -162,7 +162,7 @@ class MealConnector:
         meal_conn = sqlite3.connect(self.db_name)
         meal_cursor = meal_conn.cursor()
 
-        meal_cursor.execute("SELECT RecipeName FROM recipes WHERE RecipeName LIKE ?", ('%' + (search_query or '') + '%',))
+        meal_cursor.execute("SELECT RecipeName FROM recipes WHERE RecipeName LIKE ? OR ingredients LIKE ?", ('%' + (search_query or '') + '%','%' + (search_query or '') + '%'))
         data = meal_cursor.fetchall()
         meal_conn.close()
 
