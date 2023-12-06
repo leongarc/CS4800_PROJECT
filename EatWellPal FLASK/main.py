@@ -281,18 +281,21 @@ def progress():
     user = progress_connector.ProgressDBConnector()
     user_info = user.get_calorie_data(current_user.id)
 
-
     #progress = (int(user_info[0])/ int(user_info[1]))*100 
     #print(user_info)
     fig = px.bar(x=[int(user_info[0])], y=[current_user.id], orientation='h',
                  labels={'x': 'Progress (%)', 'y': 'User ID'},
-                 title='Daily Caloric Intake Progress', 
+                 title='Daily Calorie Intake Progress', 
                  range_x=[0, user_info[1]])
 
     # Save the chart as HTML and embed it in the template
     graph_html = fig.to_html(full_html=False)
 
-    return render_template('progress.html', graph_html=graph_html)
+    # section for food tracker
+    tracker = recomendedMeal.MealConnector("database.db")
+    user_id = current_user.id
+
+    return render_template('progress.html', graph_html=graph_html, intake=tracker.dailyintake(user_id))
 
 
 

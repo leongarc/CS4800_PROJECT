@@ -18,8 +18,9 @@
             <li><i class="fa-solid fa-gear"></i><a href="{{url_for('account')}}">Account</a></li>
         </ul>
     </div>
-    <p>This is the Progress Page</p>
     
+    <div id="caloricProgress">{{ graph_html | safe }}</div>
+
     <h1>Add Ingredient</h1>
     <form action="{{ url_for('process_add_ingredient') }}" method="post">
         <label for="ingredient_name">Ingredient Name:</label>
@@ -39,10 +40,6 @@
             </li>
         {% endfor %}
     </ul>
-
-    <div id="caloricProgress">{{ graph_html | safe }}</div>
-
-
 
 
 
