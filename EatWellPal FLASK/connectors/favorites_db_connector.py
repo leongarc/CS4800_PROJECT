@@ -9,20 +9,20 @@ import json
 #db_path = os.path.join(os.getcwd() + '/databases/users.db')
 
 class FavoritesDBConnector:
-
+    db_name = "database.db"
     def __init__(self, userid):
         self.user_id = userid
-        self.db_path = "database.db"
         self.conn = self.connect_to_db()
         self.cur = self.conn.cursor()
     
     # Function that trys to connect to database and catches to handle the error
     def connect_to_db(self):
         try:
-            conn = sqlite3.connect(self.db_path)
+            conn = sqlite3.connect(self.db_name)
             return conn
-        except sqlite3.OperationalError:
+        except Exception:
             print("DB does not exist/Error opening")
+            return False
 
     # Returns the user's favorites in a Python List
     # Returns None if no favorites data exists
@@ -30,7 +30,7 @@ class FavoritesDBConnector:
         self.cur.execute("SELECT FoodName,\
                           food_id\
                           FROM Favorite_Meals\
-                          WHERE User_id = ?", (str(self.user_id)))
+                          WHERE User_id = ?", (str(self.user_id),))
         result = self.cur.fetchall()
         
         if result:
