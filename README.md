@@ -20,7 +20,14 @@ Favorites: Simply a page to see your favortied meals.
 
 Progress Page: Simply a page where you can see you calorie consumption progress, illustated in a graph.
 
+## Files
+Main.py - has all app.routes to connect python to html
 
+recomendedMeal.py - Has all the machine learning code along with additional functioanlity for main and meals page
+unit_test_recomended.py - unit testing for my recomendedMeal
+Main.html - html code that displays machine learning results
+Meals.html - html code that runs our meal search function
+Meals_data.html - html code to diplay meal information, from clicking on meals from main or meals
 
 ## Features
 Calorie Tracker - Track your calories
