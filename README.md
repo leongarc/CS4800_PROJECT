@@ -67,6 +67,8 @@ Favorite Meals Page - You could have your collection of favorte meals are here
 
 Progress Page - This is where you'll find your weight progress. You can see where you stand depending on the meals you’ve eaten and your weight progression.
 
+Home PAge - Recommend a list of meals to eat to satisfy Daily Calorie intake using TF-IDF, and other methods
+
 ## Roadmap
 EatWellPal end goal is to provide personalized meal suggestions via machine learning. 
 
