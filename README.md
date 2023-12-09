@@ -60,6 +60,11 @@ Progress Page: Simply a page where you can see you calorie consumption progress,
     Unit_test_favorites.py - Unit testing for favorites_db_connector.py 
     Unit_test_recomended.py - unit testing for my recomendedMeal
 
+### Test Accounts
+	username- 'fa' password - 'fa'
+	username- 'ba' password - 'ba'
+	username- 'test' password - 'test'
+
 ## Features
 Calorie Tracker - Track your calories
 
@@ -67,7 +72,7 @@ Favorite Meals Page - You could have your collection of favorte meals are here
 
 Progress Page - This is where you'll find your weight progress. You can see where you stand depending on the meals you’ve eaten and your weight progression.
 
-Home PAge - Recommend a list of meals to eat to satisfy Daily Calorie intake using TF-IDF, and other methods
+Home Page - Recommend a list of meals to eat to satisfy Daily Calorie intake using TF-IDF, and other methods
 
 ## Roadmap
 EatWellPal end goal is to provide personalized meal suggestions via machine learning. 
