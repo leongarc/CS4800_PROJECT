@@ -22,8 +22,8 @@ Progress Page: Simply a page where you can see you calorie consumption progress,
 
 ## Files
 Connectors: 
-Favorites_db_connector.py - Has code that communicates with the database.db, favorites meals table, as well as the calorie intake table. Retrieves favorites, inserts favorites, and inserts consumed meals into the database. 
-Favorties_db_test.py - Code to test the functionality of the favorites_db_connector.py while developing. 
+Favorites_db_connector.py - Has code that communicates with the database.db, favorites meals table, as well as the calorie intake table. Retrieves favorites, inserts favorites, and inserts consumed meals into the database.
+Favorties_db_test.py - Code to test the functionality of the favorites_db_connector.py while developing.
 Progress_connector.py - has the code that connects the progress page to the db  
 RecomendedMeal.py - Has all the machine learning code along with additional functionality for main and meals page 
 User_db_connector.py- Has the logic to authenticate users for login, logic to create new users, return user info for all pages and account page. 
