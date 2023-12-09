@@ -21,36 +21,36 @@ Favorites: Simply a page to see your favortied meals.
 Progress Page: Simply a page where you can see you calorie consumption progress, illustated in a graph.
 
 ## Files
-Connectors: 
-Favorites_db_connector.py - Has code that communicates with the database.db, favorites meals table, as well as the calorie intake table. Retrieves favorites, inserts favorites, and inserts consumed meals into the database.
-Favorties_db_test.py - Code to test the functionality of the favorites_db_connector.py while developing.
-Progress_connector.py - has the code that connects the progress page to the db  
-RecomendedMeal.py - Has all the machine learning code along with additional functionality for main and meals page 
-User_db_connector.py- Has the logic to authenticate users for login, logic to create new users, return user info for all pages and account page. 
+Connectors:
+	Favorites_db_connector.py - Has code that communicates with the database.db, favorites meals table, as well as the calorie intake table. Retrieves favorites, inserts favorites, and inserts consumed meals into the database.
+	Favorties_db_test.py - Code to test the functionality of the favorites_db_connector.py while developing.
+	Progress_connector.py - has the code that connects the progress page to the db  
+	RecomendedMeal.py - Has all the machine learning code along with additional functionality for main and meals page 
+	User_db_connector.py- Has the logic to authenticate users for login, logic to create new users, return user info for all pages and account page. 
 Static 
-Images – Source for the burger image and favicons 
+	Images – Source for the burger image and favicons 
 Styles 
-Accounts.css - styling for account page 
-Favorties_style.css - Has styling for the favorites page as well as two JavaScript scripts. Scripts handle populating the horizontal list slider with favorites and deletes the button when a favorite is deleted. 
-Login_style.css - page controls the css for the login as well as the signup and additional info pages as they are similar 
-Progress_styles.css 
-Style.css - Has styling code for the menu for the entirety of EatWellPal web app. 
+	Accounts.css - styling for account page 
+	Favorties_style.css - Has styling for the favorites page as well as two JavaScript scripts. Scripts handle populating the horizontal list slider with favorites and deletes the button when a favorite is deleted. 
+	Login_style.css - page controls the css for the login as well as the signup and additional info pages as they are similar 
+	Progress_styles.css 
+	Style.css - Has styling code for the menu for the entirety of EatWellPal web app. 
 Templates 
-Account.html - html code to display the account page 
-Addintake.html - for testing, not in use 
-Additional_info.html - html code to get additional information to finish signup 
-Calorie_progree.html - for testing, not in use 
-Delete_account.html - html to make sure user wants to delete account 
-Edit_account.html - page to get info to update account 
-Favoirtes.html - html code to display list of meals in user favorite 
-Home.html - home page that links login and signup page 
-Login.html - html code to display login  
-Main.html - html code that displays machine learning results 
-Meals.html - html code that runs our meal search function 
-Meal_data.html - html code to diplay meal information, from clicking on meals from main or meals 
-Progress.html- html code that displays your progress on the progress page 
-Signup.html - page controls the HTML for signup  page.  This page controls getting basic info like email and password and returning it to main.py 
-Weight_progress.html -html code that displays your weight progress on the progress page 
+	Account.html - html code to display the account page 
+	Addintake.html - for testing, not in use 
+	Additional_info.html - html code to get additional information to finish signup 
+	Calorie_progree.html - for testing, not in use 
+	Delete_account.html - html to make sure user wants to delete account 
+	Edit_account.html - page to get info to update account 
+	Favoirtes.html - html code to display list of meals in user favorite 
+	Home.html - home page that links login and signup page 
+	Login.html - html code to display login  
+	Main.html - html code that displays machine learning results 
+	Meals.html - html code that runs our meal search function 
+	Meal_data.html - html code to diplay meal information, from clicking on meals from main or meals 
+	Progress.html- html code that displays your progress on the progress page 
+	Signup.html - page controls the HTML for signup  page.  This page controls getting basic info like email and password and returning it to main.py 
+	Weight_progress.html -html code that displays your weight progress on the progress page 
 Database.db - holds all data in separate tables 
 Main.py - has all app.routes to connect python to html 
 Progress_unit_test.py- unit test for the progress page 
